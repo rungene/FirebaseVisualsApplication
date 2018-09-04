@@ -1,5 +1,6 @@
 package com.rungenes.firebasevisualsapplication;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
@@ -9,6 +10,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
@@ -39,10 +42,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //search the data
-    private void firebaseSearch(String textSearch){
+    private void firebaseSearch(String textSearch) {
         Query firebaseQuery = mRef.orderByChild("title").startAt(textSearch).endAt(textSearch + "\uf8ff");
 
-        FirebaseRecyclerAdapter<ModelClass,ViewHolder> firebaseRecyclerAdapter =
+        FirebaseRecyclerAdapter<ModelClass, ViewHolder> firebaseRecyclerAdapter =
                 new FirebaseRecyclerAdapter<ModelClass, ViewHolder>(
                         ModelClass.class,
                         R.layout.rowitem,
@@ -54,15 +57,55 @@ public class MainActivity extends AppCompatActivity {
                     protected void populateViewHolder(ViewHolder viewHolder, ModelClass model, int position) {
 
 
-                        viewHolder.setDetails(getApplicationContext(),model.getTitle(),model.getImage(),model.getDescription());
+                        viewHolder.setDetails(getApplicationContext(), model.getTitle(), model.getImage(), model.getDescription());
 
                     }
+                    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+                        ViewHolder viewHolder = super.onCreateViewHolder(parent, viewType);
+
+
+                        viewHolder.setOnClickListener(new ViewHolder.ClickListener() {
+                            @Override
+                            public void onItemClick(View view, int position) {
+                          /*    //views
+                                TextView mTitle = findViewById(R.id.textViewTitle);
+                                TextView mDesc = findViewById(R.id.textViewDescription);
+                                ImageView mImage = findViewById(R.id.imageViewRow);*/
+
+                                //gettting data from firebase from the position clicked.
+                                String mTitle = getItem(position).getTitle();
+                                String mDesc = getItem(position).getDescription();
+                                String mImage = getItem(position).getImage();
+
+
+                                //passing data to the new activity
+                                Intent intent = new Intent(view.getContext(), ImageDetailsActivity.class);
+
+                                intent.putExtra("title", mTitle);//put title
+                                intent.putExtra("description", mDesc);//put description
+                                intent.putExtra("image", mImage);//put image url
+                                startActivity(intent);
+
+
+                            }
+
+                            @Override
+                            public void onItemLongClick(View view, int position) {
+
+                            }
+                        });
+
+
+                        return viewHolder;
+                    }
+
+
                 };
         //set adapter to recyclerview
         mRecyclerview.setAdapter(firebaseRecyclerAdapter);
 
     }
-
 
 
     //load data to recyclerview on start
@@ -71,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        FirebaseRecyclerAdapter<ModelClass,ViewHolder>  firebaseRecyclerAdapter = new
+        FirebaseRecyclerAdapter<ModelClass, ViewHolder> firebaseRecyclerAdapter = new
                 FirebaseRecyclerAdapter<ModelClass, ViewHolder>(
                         ModelClass.class,
                         R.layout.rowitem,
@@ -81,10 +124,52 @@ public class MainActivity extends AppCompatActivity {
                 ) {
                     @Override
                     protected void populateViewHolder(ViewHolder viewHolder, ModelClass model, int position) {
-                        viewHolder.setDetails(getApplicationContext(),model.getTitle(),model.getImage(),model.getDescription());
+                        viewHolder.setDetails(getApplicationContext(), model.getTitle(), model.getImage(), model.getDescription());
 
                     }
+
+                    @Override
+                    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+                        ViewHolder viewHolder = super.onCreateViewHolder(parent, viewType);
+
+
+                        viewHolder.setOnClickListener(new ViewHolder.ClickListener() {
+                            @Override
+                            public void onItemClick(View view, int position) {
+                            /*    //views
+                                TextView mTitle = findViewById(R.id.textViewTitle);
+                                TextView mDesc = findViewById(R.id.textViewDescription);
+                                ImageView mImage = findViewById(R.id.imageViewRow);*/
+
+                                //gettting data from firebase from the position clicked.
+                                String mTitle = getItem(position).getTitle();
+                                String mDesc = getItem(position).getDescription();
+                                String mImage = getItem(position).getImage();
+
+
+                                //passing data to the new activity
+                                Intent intent = new Intent(view.getContext(), ImageDetailsActivity.class);
+
+                                intent.putExtra("title", mTitle);//put title
+                                intent.putExtra("description", mDesc);//put description
+                                intent.putExtra("image", mImage);//put image url
+                                startActivity(intent);
+
+
+                            }
+
+                            @Override
+                            public void onItemLongClick(View view, int position) {
+
+                            }
+                        });
+
+
+                        return viewHolder;
+                    }
                 };
+
         //set adapter to recyclerview
         mRecyclerview.setAdapter(firebaseRecyclerAdapter);
     }
@@ -93,9 +178,9 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         //inflating the menu ,this adds items to the action bar if presenent
 
-      getMenuInflater().inflate(R.menu.menu,menu);
+        getMenuInflater().inflate(R.menu.menu, menu);
         MenuItem menuItem = menu.findItem(R.id.menu_search);
-        SearchView searchView = (SearchView)MenuItemCompat.getActionView(menuItem);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(menuItem);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -124,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
 
         //handle other action bar item clicks hear
 
-        if (id==R.id.menu_settings){
+        if (id == R.id.menu_settings) {
 
             //TODO
             return true;
