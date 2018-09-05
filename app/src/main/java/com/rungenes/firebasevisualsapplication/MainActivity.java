@@ -1,9 +1,12 @@
 package com.rungenes.firebasevisualsapplication;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,6 +25,8 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView mRecyclerview;
     private FirebaseDatabase mfirebaseDatabase;
     private DatabaseReference mRef;
+    private LinearLayoutManager mLayoutManager;//sorting
+    private SharedPreferences mSharedPreferences;//saving sorting settings
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,12 +38,36 @@ public class MainActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Visual List");
 
+       //since the default value is the newest so for the first time it will display newest post first.
+        mSharedPreferences = getSharedPreferences("SortingSettings",MODE_PRIVATE);
+        String mSorting = mSharedPreferences.getString("Sort","newest");//where no setting is selected
+        //newest becomes the default
+
+        if (mSorting.equals("newest")){
+            mLayoutManager = new LinearLayoutManager(this);
+
+            //this will load the items from the bottom means newest  first.
+            mLayoutManager.setReverseLayout(true);
+            mLayoutManager.setStackFromEnd(true);
+
+        }else if (mSorting.equals("oldest")){
+            mLayoutManager = new LinearLayoutManager(this);
+
+            //this will load the items from the bottom means oldest  first.
+            mLayoutManager.setReverseLayout(false);
+            mLayoutManager.setStackFromEnd(false);
+
+        }
+
         mRecyclerview.setHasFixedSize(true);
-        mRecyclerview.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerview.setLayoutManager(mLayoutManager);
 
         //sending the query to the Firebase
         mfirebaseDatabase = FirebaseDatabase.getInstance();
         mRef = mfirebaseDatabase.getReference("Data");
+
+
+
     }
 
     //search the data
@@ -212,12 +241,54 @@ public class MainActivity extends AppCompatActivity {
 
         //handle other action bar item clicks hear
 
-        if (id == R.id.menu_settings) {
+        if (id == R.id.menu_sorting) {
+            //display alert dialog to choose sorting
 
-            //TODO
+            sortDialog();
+
+
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void sortDialog() {
+
+        String[] sortingOptions = {"Newest","Oldest"};
+
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        alertDialog.setTitle("Sort By")//set title
+        .setIcon(R.drawable.ic_action_sort)//set icon
+        .setItems(sortingOptions, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //the i is the is the index position of the selected item
+                //0 represents = sort by newest and 1 = sort by oldest
+
+                if (i==0){
+                    //sort by newest
+                    //edit our shared preferences
+
+                    SharedPreferences.Editor editor = mSharedPreferences.edit();
+                    editor.putString("Sort","newest");//where "sort"= key and newest=value
+                    editor.apply();//apply/save our values to the shared preference
+                    recreate();//restart the activity to take effect.
+
+                }else if (i==1){
+                    //sort by oldest
+                    //edit our shared preferences
+
+                    SharedPreferences.Editor editor = mSharedPreferences.edit();
+                    editor.putString("Sort","oldest");//where "sort"= key and oldest=value
+                    editor.apply();//apply/save our values to the shared preference
+                    recreate();//restart the activity to take effect.
+
+                }
+            }
+        });
+
+        alertDialog.show();
+
     }
 }

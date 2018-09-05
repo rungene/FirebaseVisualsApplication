@@ -40,7 +40,6 @@ public class ImageDetailsActivity extends AppCompatActivity {
         String description = getIntent().getStringExtra("description");
 
 
-
         //setting data to the views
         textViewTitleDetails.setText(title);
         textViewDescriptionDetails.setText(description);
