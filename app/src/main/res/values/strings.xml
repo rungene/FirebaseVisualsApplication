@@ -5,4 +5,7 @@
     <string name="search_menu">Search</string>
     <string name="settings_menu">Settings</string>
     <string name="sorting_menu">Sorting</string>
+    <string name="button_save">Save</string>
+    <string name="button_share">Share</string>
+    <string name="button_wallpaper">Wall</string>
 </resources>
