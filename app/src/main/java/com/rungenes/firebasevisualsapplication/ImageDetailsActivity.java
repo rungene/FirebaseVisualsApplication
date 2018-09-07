@@ -1,6 +1,7 @@
 package com.rungenes.firebasevisualsapplication;
 
 import android.Manifest;
+import android.app.WallpaperManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -118,10 +119,28 @@ public class ImageDetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                setImageWallpaper();
             }
         });
 
 
+    }
+
+    private void setImageWallpaper() {
+
+        WallpaperManager wallpaperManager = WallpaperManager.getInstance(getApplicationContext());
+
+        try {
+            wallpaperManager.setBitmap(bitmap);
+
+            Toast.makeText(this, "Wallpaper set!...", Toast.LENGTH_SHORT).show();
+
+
+        }catch (Exception e){
+
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+
+        }
     }
 
     private void shareImage() {
