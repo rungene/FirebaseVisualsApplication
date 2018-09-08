@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
         //sending the query to the Firebase
         mfirebaseDatabase = FirebaseDatabase.getInstance();
         mRef = mfirebaseDatabase.getReference("Data");
+        mRef.keepSynced(true);
 
 
 

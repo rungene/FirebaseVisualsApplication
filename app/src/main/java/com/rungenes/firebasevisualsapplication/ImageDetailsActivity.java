@@ -53,16 +53,17 @@ public class ImageDetailsActivity extends AppCompatActivity {
         //views are intitialized
 
         textViewTitleDetails = findViewById(R.id.textViewTitleDetails);
-        textViewDescriptionDetails = findViewById(R.id.textViewTitleDetails);
+        textViewDescriptionDetails = findViewById(R.id.textViewDescriptionDetails);
         imageViewRowDetails = findViewById(R.id.imageViewRowDetails);
         buttonSave = findViewById(R.id.buttonSave);
         buttonShare = findViewById(R.id.buttonShare);
         buttonWall = findViewById(R.id.buttonWall);
 
         //getting data from the intent
-        String image = getIntent().getStringExtra("image");
         String title = getIntent().getStringExtra("title");
         String description = getIntent().getStringExtra("description");
+        String image = getIntent().getStringExtra("image");
+
 
 
         //setting data to the views
