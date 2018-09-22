@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">FirebaseVisualsApplication</string>
+    <string name="app_name">MDS</string>
     <string name="textview_description">Description</string>
     <string name="textview_title">Title</string>
     <string name="search_menu">Search</string>

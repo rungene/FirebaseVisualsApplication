@@ -66,10 +66,12 @@ public class ViewHolder extends RecyclerView.ViewHolder {
         Picasso.get().load(modelClass.getImage()).into(imageViewRow);*/
 
         textViewTitle.setText(title);
+
         Picasso.get().load(image).into(imageViewRow);
         textViewDescription.setText(description);
 
     }
+
 
     //interface to send callbacks
 

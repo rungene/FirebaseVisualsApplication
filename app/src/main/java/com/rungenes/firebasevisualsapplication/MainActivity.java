@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerview = findViewById(R.id.recyclerView);
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("Visual List");
+        actionBar.setTitle("MDS List");
 
        //since the default value is the newest so for the first time it will display newest post first.
         mSharedPreferences = getSharedPreferences("SortingSettings",MODE_PRIVATE);
@@ -109,7 +109,11 @@ public class MainActivity extends AppCompatActivity {
                                 //gettting data from firebase from the position clicked.
                                 String mTitle = getItem(position).getTitle();
                                 String mDesc = getItem(position).getDescription();
+
                                 String mImage = getItem(position).getImage();
+
+
+
 
 
                                 //passing data to the new activity

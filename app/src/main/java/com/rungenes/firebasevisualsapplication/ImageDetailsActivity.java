@@ -69,16 +69,20 @@ public class ImageDetailsActivity extends AppCompatActivity {
         //setting data to the views
         textViewTitleDetails.setText(title);
         textViewDescriptionDetails.setText(description);
+
         Picasso.get().load(image).into(imageViewRowDetails);
 
 
+
+
         //getting image from imageview as bitmap
-        bitmap = ((BitmapDrawable) imageViewRowDetails.getDrawable()).getBitmap();
+       // bitmap = ((BitmapDrawable) imageViewRowDetails.getDrawable()).getBitmap();
 
         //onclick for save button
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                bitmap = ((BitmapDrawable) imageViewRowDetails.getDrawable()).getBitmap();
                 //if os >= marshmallow we need permission to save image
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
@@ -109,6 +113,7 @@ public class ImageDetailsActivity extends AppCompatActivity {
         buttonShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                bitmap = ((BitmapDrawable) imageViewRowDetails.getDrawable()).getBitmap();
 
                 shareImage();
 
@@ -119,6 +124,7 @@ public class ImageDetailsActivity extends AppCompatActivity {
         buttonWall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                bitmap = ((BitmapDrawable) imageViewRowDetails.getDrawable()).getBitmap();
 
                 setImageWallpaper();
             }
@@ -126,6 +132,7 @@ public class ImageDetailsActivity extends AppCompatActivity {
 
 
     }
+
 
     private void setImageWallpaper() {
 
@@ -145,6 +152,7 @@ public class ImageDetailsActivity extends AppCompatActivity {
     }
 
     private void shareImage() {
+
 
         try {
             //get image title and description and save in string s
