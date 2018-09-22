@@ -82,7 +82,7 @@ public class ImageDetailsActivity extends AppCompatActivity {
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                bitmap = ((BitmapDrawable) imageViewRowDetails.getDrawable()).getBitmap();
+
                 //if os >= marshmallow we need permission to save image
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
@@ -113,7 +113,7 @@ public class ImageDetailsActivity extends AppCompatActivity {
         buttonShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                bitmap = ((BitmapDrawable) imageViewRowDetails.getDrawable()).getBitmap();
+
 
                 shareImage();
 
@@ -124,7 +124,7 @@ public class ImageDetailsActivity extends AppCompatActivity {
         buttonWall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                bitmap = ((BitmapDrawable) imageViewRowDetails.getDrawable()).getBitmap();
+
 
                 setImageWallpaper();
             }
@@ -136,6 +136,9 @@ public class ImageDetailsActivity extends AppCompatActivity {
 
     private void setImageWallpaper() {
 
+
+
+        bitmap = ((BitmapDrawable) imageViewRowDetails.getDrawable()).getBitmap();
         WallpaperManager wallpaperManager = WallpaperManager.getInstance(getApplicationContext());
 
         try {
@@ -155,6 +158,7 @@ public class ImageDetailsActivity extends AppCompatActivity {
 
 
         try {
+            bitmap = ((BitmapDrawable) imageViewRowDetails.getDrawable()).getBitmap();
             //get image title and description and save in string s
 
             String stringDetails = textViewTitleDetails.getText().toString() + "\n" +textViewDescriptionDetails.getText().toString();
@@ -184,6 +188,7 @@ public class ImageDetailsActivity extends AppCompatActivity {
 
     private void saveImage() {
         //time stamp for image name
+        bitmap = ((BitmapDrawable) imageViewRowDetails.getDrawable()).getBitmap();
 
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss",
                 Locale.getDefault()).format(System.currentTimeMillis());
