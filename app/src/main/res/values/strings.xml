@@ -3,7 +3,7 @@
     <string name="textview_description">Description</string>
     <string name="textview_title">Title</string>
     <string name="search_menu">Search</string>
-    <string name="settings_menu">Settings</string>
+    <string name="logout_menu">Logout</string>
     <string name="sorting_menu">Sorting</string>
     <string name="button_save">Save</string>
     <string name="button_share">Share</string>

@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -14,8 +15,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
@@ -26,11 +29,31 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference mRef;
     private LinearLayoutManager mLayoutManager;//sorting
     private SharedPreferences mSharedPreferences;//saving sorting settings
+   // private Button btnLogout;
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+    private long backPressedTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+
+                if (firebaseAuth.getCurrentUser() == null){
+                    startActivity(new Intent(MainActivity.this,LoginActivity.class));
+                }
+            }
+        };
+
+        mAuth = FirebaseAuth.getInstance();
+
+    //    btnLogout = (Button) findViewById(R.id.btnLogout);
+
 
         mRecyclerview = findViewById(R.id.recyclerView);
 
@@ -150,6 +173,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
+        mAuth.addAuthStateListener(mAuthListener);
+
         FirebaseRecyclerAdapter<ModelClass, ViewHolder> firebaseRecyclerAdapter = new
                 FirebaseRecyclerAdapter<ModelClass, ViewHolder>(
                         ModelClass.class,
@@ -253,6 +278,8 @@ public class MainActivity extends AppCompatActivity {
 
 
             return true;
+        }else if (id==R.id.menu_logout){
+            mAuth.signOut();
         }
 
         return super.onOptionsItemSelected(item);
@@ -296,4 +323,26 @@ public class MainActivity extends AppCompatActivity {
         alertDialog.show();
 
     }
+
+
+    @Override
+    public void onBackPressed() {
+
+/*        startActivity(new Intent(MainActivity.this,LoginActivity.class));
+        finish();*/
+
+        if (backPressedTime+2000 >System.currentTimeMillis()){
+            super.onBackPressed();
+            return;
+
+        }
+        else {
+            Toast.makeText(getBaseContext(), "Please Log out", Toast.LENGTH_SHORT).show();
+        }
+
+        backPressedTime = System.currentTimeMillis();
+
+    }
+
+
 }

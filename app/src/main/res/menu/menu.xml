@@ -15,8 +15,8 @@
         app:showAsAction="never"
         />
     <item
-        android:title="@string/settings_menu"
-        android:id="@+id/menu_settings"
+        android:title="@string/logout_menu"
+        android:id="@+id/menu_logout"
         app:showAsAction="never"
         />
 
