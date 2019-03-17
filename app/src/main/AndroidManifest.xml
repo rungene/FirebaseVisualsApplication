@@ -25,9 +25,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ImageDetailsActivity" />
-        <activity android:name=".LoginActivity">
 
-        </activity>
     </application>
 
 </manifest>

@@ -17,11 +17,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+
+import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
     private RecyclerView mRecyclerview;
@@ -32,25 +36,22 @@ public class MainActivity extends AppCompatActivity {
    // private Button btnLogout;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    private long backPressedTime;
+
+    // Choose an arbitrary request code value
+    public static final int RC_SIGN_IN = 123;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+       // FacebookSdk.sdkInitialize(getApplicationContext());
 
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
 
-                if (firebaseAuth.getCurrentUser() == null){
-                    startActivity(new Intent(MainActivity.this,LoginActivity.class));
-                }
-            }
-        };
 
         mAuth = FirebaseAuth.getInstance();
+
+
 
     //    btnLogout = (Button) findViewById(R.id.btnLogout);
 
@@ -90,8 +91,84 @@ public class MainActivity extends AppCompatActivity {
         mRef.keepSynced(true);
 
 
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+
+                if (user!= null){
+                    //signed in user
+                    onInitializeSignedin(user.getDisplayName());
+
+
+                    //      startActivity(new Intent(MainActivity.this,LoginActivity.class));
+                }else {
+                    //user is signed out
+                    onSignedOutCleanup();
+
+                    startActivityForResult(
+                            AuthUI.getInstance()
+                                    .createSignInIntentBuilder()
+                                    .setAvailableProviders(Arrays.asList(
+                                            new AuthUI.IdpConfig.GoogleBuilder().build(),
+                                            new AuthUI.IdpConfig.EmailBuilder().build()
+
+                                    ))
+                                    .build(),
+                            RC_SIGN_IN);
+
+                }
+            }
+        };
+
 
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_SIGN_IN) {
+            if (resultCode == RESULT_OK) {
+                // Sign-in succeeded, set up the UI
+                Toast.makeText(this, "Signed in!", Toast.LENGTH_SHORT).show();
+            } else if (resultCode == RESULT_CANCELED) {
+                // Sign in was canceled by the user, finish the activity
+                Toast.makeText(this, "Sign in canceled", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        }
+    }
+
+    @Override
+    protected void onPause() {
+
+        super.onPause();
+        mAuth.removeAuthStateListener(mAuthListener);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+
+
+
+    private void onInitializeSignedin(String displayName) {
+
+
+
+    }
+
+    private void onSignedOutCleanup(){
+
+
+
+
+    }
+
+
 
     //search the data
     private void firebaseSearch(String textSearch) {
@@ -173,7 +250,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        mAuth.addAuthStateListener(mAuthListener);
 
         FirebaseRecyclerAdapter<ModelClass, ViewHolder> firebaseRecyclerAdapter = new
                 FirebaseRecyclerAdapter<ModelClass, ViewHolder>(
@@ -276,10 +352,11 @@ public class MainActivity extends AppCompatActivity {
 
             sortDialog();
 
-
             return true;
         }else if (id==R.id.menu_logout){
-            mAuth.signOut();
+            //signout
+            AuthUI.getInstance().signOut(this);
+
         }
 
         return super.onOptionsItemSelected(item);
@@ -325,24 +402,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    @Override
-    public void onBackPressed() {
 
-/*        startActivity(new Intent(MainActivity.this,LoginActivity.class));
-        finish();*/
 
-        if (backPressedTime+2000 >System.currentTimeMillis()){
-            super.onBackPressed();
-            return;
 
-        }
-        else {
-            Toast.makeText(getBaseContext(), "Please Log out", Toast.LENGTH_SHORT).show();
-        }
-
-        backPressedTime = System.currentTimeMillis();
-
-    }
 
 
 }
