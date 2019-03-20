@@ -346,10 +346,8 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //handle other action bar item clicks hear
-
         if (id == R.id.menu_sorting) {
             //display alert dialog to choose sorting
-
             sortDialog();
 
             return true;
@@ -357,7 +355,10 @@ public class MainActivity extends AppCompatActivity {
             //signout
             AuthUI.getInstance().signOut(this);
 
-        }
+        } else //start Add Post Activity
+            if (id == R.id.add_post) {
+                startActivity(new Intent(MainActivity.this, ImageAddActivity.class));
+            }
 
         return super.onOptionsItemSelected(item);
     }

@@ -20,6 +20,12 @@
         app:showAsAction="never"
         />
 
+    <item
+        android:title="@string/add_post"
+        android:id="@+id/add_post"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_action_add"
+        />
 
 
 </menu>

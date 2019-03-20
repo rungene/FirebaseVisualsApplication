@@ -8,5 +8,10 @@
     <string name="button_save">Save</string>
     <string name="button_share">Share</string>
     <string name="button_wallpaper">Wall</string>
+    <string name="add_post">Add Post</string>
+    <string name="button_upload">Upload</string>
+    <string name="add_description">Enter description</string>
+    <string name="add_title">Enter title</string>
+
 
 </resources>
