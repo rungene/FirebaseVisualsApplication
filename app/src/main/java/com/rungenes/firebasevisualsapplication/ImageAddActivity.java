@@ -10,7 +10,6 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
@@ -18,12 +17,13 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -129,7 +129,64 @@ public class ImageAddActivity extends AppCompatActivity {
 
             //adding an on success listener to storageReference2
 
-            storageReference2.putFile(filePathUri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            storageReference2.putFile(filePathUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                    Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
+                    while (!uriTask.isSuccessful());
+                        Uri downloadUri = uriTask.getResult();
+
+
+                    //get title
+                    String mTitle = addTitle.getText().toString().trim();
+                    //get description
+                    String mDesc = addDescription.getText().toString().trim();
+
+                    //dismiss the progress bar
+                    progressDialog.dismiss();
+
+                    Toast.makeText(ImageAddActivity.this, "Post Uploaded", Toast.LENGTH_SHORT).show();
+
+                    ImageUploadInfo imageUploadInfo = new ImageUploadInfo(mTitle,mDesc,downloadUri.toString(),mTitle.toLowerCase());
+
+                    //getting image upload id
+                    String imageUploadId = mDatabaseReference.push().getKey();
+
+                    //adding image upload id's  child element into databaseReference
+
+                    mDatabaseReference.child(imageUploadId).setValue(imageUploadInfo);
+
+                    finish();
+
+
+
+
+
+                }
+                //if something went wrong like network failure
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+
+                    progressDialog.dismiss();
+                    //show error toast
+                    Toast.makeText(ImageAddActivity.this,e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+
+                    progressDialog.setTitle("Uploading");
+
+                    double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                    Toast.makeText(ImageAddActivity.this, "Upload is"+progress, Toast.LENGTH_SHORT).show();
+
+                    System.out.println("Upload is " + progress + "% done");
+                }
+            });
+
+        /*continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                 @Override
                 public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
                     if (!task.isSuccessful()) {
@@ -169,6 +226,8 @@ public class ImageAddActivity extends AppCompatActivity {
 
                         mDatabaseReference.child(imageUploadId).setValue(imageUploadInfo);
 
+                        finish();
+
 
                     } else {
 
@@ -178,29 +237,12 @@ public class ImageAddActivity extends AppCompatActivity {
 
                     }
                 }
-            });
-                    /*.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
-                            //get title
-                            String mTitle = addTitle.getText().toString().trim();
-                            //get description
-                            String mDesc = addDescription.getText().toString().trim();
-
-                            //dismiss the progress bar
-                            progressDialog.dismiss();
-
-                            Toast.makeText(ImageAddActivity.this, "Post Uploaded", Toast.LENGTH_SHORT).show();
-
-                            ImageUploadInfo imageUploadInfo = new ImageUploadInfo(mTitle,mDesc,taskSnapshot.get);
+            });*/
 
 
-
-                        }
-                    });*/
+        }else {
+            Toast.makeText(this, "Please select image and add name", Toast.LENGTH_SHORT).show();
         }
-
 
     }
 

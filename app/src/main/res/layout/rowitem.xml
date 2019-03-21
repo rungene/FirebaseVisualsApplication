@@ -36,7 +36,10 @@
             android:text="@string/textview_description"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:ellipsize="end"
+            android:maxLines="3"
+            />
 
     </LinearLayout>
 
