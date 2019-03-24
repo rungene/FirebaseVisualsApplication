@@ -21,13 +21,22 @@ import android.widget.Toast;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.Arrays;
+
+import static com.google.firebase.storage.FirebaseStorage.getInstance;
 
 public class MainActivity extends AppCompatActivity {
     private RecyclerView mRecyclerview;
@@ -175,6 +184,99 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+
+    private void showDeleteDataDialog(final String currentTitle, final String currentImageUrl) {
+
+        //alert dialog
+         AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
+        alertDialog.setTitle("Delete");
+        alertDialog.setMessage("Are you sure you want to delete this post?");
+        //set positive/yes button
+        alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                //user pressed "Yes",delete data from firebase.
+
+                /*whenever we publish a post the parent key is automatically created
+                since we do not know the key for the items to remove we will first need to query the DB to
+                * determine those keys.
+                * */
+                Query query = mRef.orderByChild("title").equalTo(currentTitle);
+                query.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                        for (DataSnapshot ds: dataSnapshot.getChildren() ){
+
+                            ds.getRef().removeValue();//remove values from firebase when title matches.
+                        }
+                        //show a toast that the post was removed successfully
+
+                        Toast.makeText(MainActivity.this, "Post Deleted Successfully..", Toast.LENGTH_SHORT).show();
+
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        //if anything goes wrong show error message.
+
+                        Toast.makeText(MainActivity.this, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+
+
+                    }
+                });
+
+                // delete the image using a url reference from firebse storage
+
+
+                StorageReference storageReferencePicture = getInstance().getReferenceFromUrl(currentImageUrl);
+
+                storageReferencePicture.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+
+                        //deleted successfully
+                        Toast.makeText(MainActivity.this, "Image deleted successfully", Toast.LENGTH_SHORT).show();
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        //failure to delete
+                        //something went wrong.
+
+                        Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+
+            }
+
+
+        });
+
+
+
+
+        alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                //user pressed "No", just dismiss the dialog
+                dialog.dismiss();
+
+            }
+        });
+
+        //show dialog
+        alertDialog.create().show();
+
+
+    }
+
     //show data
 
     private void showData (){
@@ -192,7 +294,7 @@ public class MainActivity extends AppCompatActivity {
 
             @NonNull
             @Override
-            public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+            public ViewHolder onCreateViewHolder (@NonNull ViewGroup viewGroup, int i) {
 
                 //inflating layout row.xml
                 View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.rowitem,viewGroup,false);
@@ -200,6 +302,7 @@ public class MainActivity extends AppCompatActivity {
                 ViewHolder viewHolder = new ViewHolder(view);
 
                 //item click listener
+
 
                 viewHolder.setOnClickListener(new ViewHolder.ClickListener() {
                     @Override
@@ -209,7 +312,6 @@ public class MainActivity extends AppCompatActivity {
                         String mDesc = getItem(position).getDescription();
 
                         String mImage = getItem(position).getImage();
-
 
 
 
@@ -225,13 +327,24 @@ public class MainActivity extends AppCompatActivity {
 
                     }
 
+
+
                     @Override
                     public void onItemLongClick(View view, int position) {
 
-                        //implement the onLongClick hear
+                       //get the current title to delete data from firebase
+                        String currentTitle = getItem(position).getTitle();
+
+                        //get the current image url to delete image from firebase storage
+
+                        String currentImageUrl = getItem(position).getImage();
+                        //method call
+                        showDeleteDataDialog(currentTitle,currentImageUrl);
+
 
 
                     }
+
                 });
 
                 return viewHolder;
@@ -294,9 +407,6 @@ public class MainActivity extends AppCompatActivity {
                         String mImage = getItem(position).getImage();
 
 
-
-
-
                         //passing data to the new activity
                         Intent intent = new Intent(view.getContext(), ImageDetailsActivity.class);
 
@@ -311,8 +421,16 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onItemLongClick(View view, int position) {
 
-                        //implement the onLongClick hear
+                        //get the current tile to delete data from firebase
 
+                        String currentTitle = getItem(position).getTitle();
+
+                        //get the current image url to delete image from firebase storage
+
+                        String currentImageUrl = getItem(position).getImage();
+                        //show the method call
+
+                        showDeleteDataDialog(currentTitle,currentImageUrl);
 
                     }
                 });
@@ -320,8 +438,6 @@ public class MainActivity extends AppCompatActivity {
                 return viewHolder;
             }
         };
-
-
         //set layout as a linear layout
 
         mRecyclerview.setLayoutManager(mLayoutManager);
