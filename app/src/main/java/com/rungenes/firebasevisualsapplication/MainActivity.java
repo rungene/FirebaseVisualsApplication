@@ -332,14 +332,57 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onItemLongClick(View view, int position) {
 
-                       //get the current title to delete data from firebase
-                        String currentTitle = getItem(position).getTitle();
+                       //get the current title
+                        final String cTitle = getItem(position).getTitle();
 
-                        //get the current image url to delete image from firebase storage
 
-                        String currentImageUrl = getItem(position).getImage();
-                        //method call
-                        showDeleteDataDialog(currentTitle,currentImageUrl);
+                        //get the current description
+                        final String cDesc = getItem(position).getDescription();
+
+                        //get the current image url
+
+                        final String cImageUrl = getItem(position).getImage();
+
+                        //show dialog on long click
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+                        //options to display in a dialog
+
+                        String [] options = {"Update","Delete"};
+
+                        //setting dialog
+                        builder.setItems(options, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                //handle dialogs item clicks
+
+                                if (which==0){
+
+                                    //update clicked
+
+                                    //start activity with putting the current data
+
+                                    Intent intent = new Intent(MainActivity.this,ImageAddActivity.class);
+                                    intent.putExtra("cTitle",cTitle);
+                                    intent.putExtra("cDesc",cDesc);
+                                    intent.putExtra("cImageUrl",cImageUrl);
+                                    startActivity(intent);
+
+                                } if (which==1){
+
+                                    //delete click
+                                    //method call
+                                    showDeleteDataDialog(cTitle,cImageUrl);
+                                }
+
+                            }
+                        });
+
+                        builder.create().show();//show dialog
+
+
 
 
 
@@ -420,17 +463,54 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onItemLongClick(View view, int position) {
+                        //get the current title
+                        final String cTitle = getItem(position).getTitle();
 
-                        //get the current tile to delete data from firebase
 
-                        String currentTitle = getItem(position).getTitle();
+                        //get the current description
+                        final String cDesc = getItem(position).getDescription();
 
-                        //get the current image url to delete image from firebase storage
+                        //get the current image url
 
-                        String currentImageUrl = getItem(position).getImage();
-                        //show the method call
+                        final String cImageUrl = getItem(position).getImage();
 
-                        showDeleteDataDialog(currentTitle,currentImageUrl);
+                        //show dialog on long click
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+                        //options to display in a dialog
+
+                        String [] options = {"Update","Delete"};
+
+                        //setting dialog
+                        builder.setItems(options, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                //handle dialogs item clicks
+
+                                if (which==0){
+                                    //update clicked
+                                    //start activity with putting the current data
+                                    Intent intent = new Intent(MainActivity.this,ImageAddActivity.class);
+                                    intent.putExtra("cTitle",cTitle);
+                                    intent.putExtra("cDesc",cDesc);
+                                    intent.putExtra("cImageUrl",cImageUrl);
+                                    startActivity(intent);
+                                }
+                                if (which==1){
+
+                                    //delete click
+                                    //method call
+                                    showDeleteDataDialog(cTitle,cImageUrl);
+                                }
+
+                            }
+                        });
+
+                        builder.create().show();//show dialog
+
+
 
                     }
                 });

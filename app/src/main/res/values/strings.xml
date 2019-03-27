@@ -11,7 +11,7 @@
     <string name="add_post">Add Post</string>
     <string name="button_upload">Upload</string>
     <string name="add_description">Enter description</string>
-    <string name="add_title">Enter title</string>
-
+    <string name="add_title">Enter road name</string>
+    <string name="rename_button_upload">Update</string>
 
 </resources>
