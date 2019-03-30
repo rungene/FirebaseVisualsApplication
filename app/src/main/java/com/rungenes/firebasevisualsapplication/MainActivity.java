@@ -229,31 +229,37 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-                // delete the image using a url reference from firebse storage
+                // delete the image using a url reference from firebase storage
+
+                if (currentTitle!=null &&currentImageUrl!=null) {
 
 
-                StorageReference storageReferencePicture = getInstance().getReferenceFromUrl(currentImageUrl);
+                    StorageReference storageReferencePicture = getInstance().getReferenceFromUrl(currentImageUrl);
 
-                storageReferencePicture.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
 
-                        //deleted successfully
-                        Toast.makeText(MainActivity.this, "Image deleted successfully", Toast.LENGTH_SHORT).show();
+                    storageReferencePicture.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
 
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        //failure to delete
-                        //something went wrong.
+                            //deleted successfully
+                            Toast.makeText(MainActivity.this, "Image deleted successfully", Toast.LENGTH_SHORT).show();
 
-                        Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            //failure to delete
+                            //something went wrong.
 
-                    }
-                });
+                            Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
 
-            }
+                        }
+                    });
+
+                }
+
+                }
+
 
 
         });
@@ -374,7 +380,11 @@ public class MainActivity extends AppCompatActivity {
 
                                     //delete click
                                     //method call
-                                    showDeleteDataDialog(cTitle,cImageUrl);
+
+
+
+                                        showDeleteDataDialog(cTitle, cImageUrl);
+
                                 }
 
                             }
@@ -502,8 +512,11 @@ public class MainActivity extends AppCompatActivity {
 
                                     //delete click
                                     //method call
-                                    showDeleteDataDialog(cTitle,cImageUrl);
-                                }
+
+
+                                        showDeleteDataDialog(cTitle, cImageUrl);
+                                    }
+
 
                             }
                         });

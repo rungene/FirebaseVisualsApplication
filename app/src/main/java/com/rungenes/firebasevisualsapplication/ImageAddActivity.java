@@ -205,27 +205,32 @@ public class ImageAddActivity extends AppCompatActivity {
 
     private void deletePreviousImage() {
 
-        StorageReference pictureReference = getInstance().getReferenceFromUrl(cImageUrl);
+     if (cImageUrl!=null&& uploadStoragePath.contains(cImageUrl)) {
 
-        pictureReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                //deleted
-                Toast.makeText(ImageAddActivity.this, "Previous image deleted...", Toast.LENGTH_SHORT).show();
+         StorageReference pictureReference = getInstance().getReferenceFromUrl(cImageUrl);
 
+         pictureReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+             @Override
+             public void onSuccess(Void aVoid) {
+                 //deleted
+                 Toast.makeText(ImageAddActivity.this, "Previous image deleted...", Toast.LENGTH_SHORT).show();
+                 //upload new image and get its url
+                 uploadNewImage();
+             }
+         }).addOnFailureListener(new OnFailureListener() {
+             @Override
+             public void onFailure(@NonNull Exception e) {
+                 //failed
+                 //get and show the error message
+                 Toast.makeText(ImageAddActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                 progressDialog.dismiss();
+             }
+         });
 
-                //upload new image and get its url
-                uploadNewImage();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                //failed
-                //get and show the error message
-                Toast.makeText(ImageAddActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                progressDialog.dismiss();
-            }
-        });
+     }else {
+         uploadNewImage();
+     }
+
     }
 
     private void uploadNewImage() {
