@@ -51,6 +51,11 @@ public class MainActivity extends AppCompatActivity {
     // Choose an arbitrary request code value
     public static final int RC_SIGN_IN = 123;
 
+    //Folder path to Firebase storage.
+    private String uploadStoragePath = "All_Image_Upload/";
+
+
+
     private FirebaseRecyclerAdapter<ModelClass,ViewHolder>  firebaseRecyclerAdapter;
     private FirebaseRecyclerOptions<ModelClass> options;
 
@@ -65,9 +70,6 @@ public class MainActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-
-
-    //    btnLogout = (Button) findViewById(R.id.btnLogout);
 
 
         mRecyclerview = findViewById(R.id.recyclerView);
@@ -225,17 +227,14 @@ public class MainActivity extends AppCompatActivity {
 
                         Toast.makeText(MainActivity.this, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
 
-
                     }
                 });
 
                 // delete the image using a url reference from firebase storage
 
-                if (currentTitle!=null &&currentImageUrl!=null) {
-
+                if (currentTitle!=null && currentImageUrl!=null&& uploadStoragePath.contains(currentImageUrl)) {
 
                     StorageReference storageReferencePicture = getInstance().getReferenceFromUrl(currentImageUrl);
-
 
                     storageReferencePicture.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
@@ -243,16 +242,13 @@ public class MainActivity extends AppCompatActivity {
 
                             //deleted successfully
                             Toast.makeText(MainActivity.this, "Image deleted successfully", Toast.LENGTH_SHORT).show();
-
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             //failure to delete
                             //something went wrong.
-
                             Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-
                         }
                     });
 
@@ -318,6 +314,7 @@ public class MainActivity extends AppCompatActivity {
                         String mDesc = getItem(position).getDescription();
 
                         String mImage = getItem(position).getImage();
+                       // String postId = getItem(position).getUid();
 
 
 
@@ -328,6 +325,7 @@ public class MainActivity extends AppCompatActivity {
                         intent.putExtra("title", mTitle);//put title
                         intent.putExtra("description", mDesc);//put description
                         intent.putExtra("image", mImage);//put image url
+                       // intent.putExtra("uid",postId);//put post id
                         startActivity(intent);
 
 
@@ -348,6 +346,9 @@ public class MainActivity extends AppCompatActivity {
                         //get the current image url
 
                         final String cImageUrl = getItem(position).getImage();
+                        //get the current postId
+
+                      //  final String cPostId= getItem(position).getUid();
 
                         //show dialog on long click
 
@@ -367,21 +368,19 @@ public class MainActivity extends AppCompatActivity {
                                 if (which==0){
 
                                     //update clicked
-
                                     //start activity with putting the current data
 
                                     Intent intent = new Intent(MainActivity.this,ImageAddActivity.class);
                                     intent.putExtra("cTitle",cTitle);
                                     intent.putExtra("cDesc",cDesc);
                                     intent.putExtra("cImageUrl",cImageUrl);
+                                   // intent.putExtra("cPostId",cPostId);
                                     startActivity(intent);
 
                                 } if (which==1){
 
                                     //delete click
                                     //method call
-
-
 
                                         showDeleteDataDialog(cTitle, cImageUrl);
 
@@ -456,9 +455,8 @@ public class MainActivity extends AppCompatActivity {
                         //gettting data from firebase from the position clicked.
                         String mTitle = getItem(position).getTitle();
                         String mDesc = getItem(position).getDescription();
-
                         String mImage = getItem(position).getImage();
-
+                        //String postId = getItem(position).getUid();
 
                         //passing data to the new activity
                         Intent intent = new Intent(view.getContext(), ImageDetailsActivity.class);
@@ -466,6 +464,7 @@ public class MainActivity extends AppCompatActivity {
                         intent.putExtra("title", mTitle);//put title
                         intent.putExtra("description", mDesc);//put description
                         intent.putExtra("image", mImage);//put image url
+                       // intent.putExtra("uid",postId);//put post id
                         startActivity(intent);
 
 
@@ -483,6 +482,10 @@ public class MainActivity extends AppCompatActivity {
                         //get the current image url
 
                         final String cImageUrl = getItem(position).getImage();
+                        //get the current postId
+
+                       // final String cPostId= getItem(position).getUid();
+
 
                         //show dialog on long click
 
@@ -506,14 +509,12 @@ public class MainActivity extends AppCompatActivity {
                                     intent.putExtra("cTitle",cTitle);
                                     intent.putExtra("cDesc",cDesc);
                                     intent.putExtra("cImageUrl",cImageUrl);
+                                    //intent.putExtra("cPostId",cPostId);
                                     startActivity(intent);
                                 }
                                 if (which==1){
-
                                     //delete click
                                     //method call
-
-
                                         showDeleteDataDialog(cTitle, cImageUrl);
                                     }
 
@@ -522,8 +523,6 @@ public class MainActivity extends AppCompatActivity {
                         });
 
                         builder.create().show();//show dialog
-
-
 
                     }
                 });

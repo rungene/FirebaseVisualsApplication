@@ -5,6 +5,7 @@ public class ModelClass {
     String title;
     String image;
     String description;
+    //String uid;
 
     public ModelClass() {
     }
@@ -32,4 +33,12 @@ public class ModelClass {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    /*public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }*/
 }

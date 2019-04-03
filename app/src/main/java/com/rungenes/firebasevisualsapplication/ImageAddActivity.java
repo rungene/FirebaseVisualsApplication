@@ -70,7 +70,7 @@ public class ImageAddActivity extends AppCompatActivity {
 
     //intent data will be stored in this variables
 
-    String cTitle,cDesc,cImageUrl;
+    String cTitle,cDesc,cImageUrl,cPostId;
 
 
 
@@ -119,11 +119,11 @@ public class ImageAddActivity extends AppCompatActivity {
             2) "Update"  which is diplayed by dialog displayed by long clicking
             -this statement will be ran if we come here the seconds way.
             * */
-
             //get and store data
             cTitle = intent.getString("cTitle");
             cDesc = intent.getString("cDesc");
             cImageUrl = intent.getString("cImageUrl");
+            cPostId = intent.getString("cPostId");
 
             //set data into views
 
@@ -288,6 +288,8 @@ public class ImageAddActivity extends AppCompatActivity {
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebaseDatabase.getReference().child("Data");
 
+        //String postId = databaseReference.getKey();
+
         Query query = databaseReference.orderByChild("title").equalTo(cTitle);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -401,58 +403,6 @@ public class ImageAddActivity extends AppCompatActivity {
                 }
             });
 
-        /*continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                @Override
-                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                    if (!task.isSuccessful()) {
-                        throw task.getException();
-
-                    }
-                    return storageReference2.getDownloadUrl();
-
-
-                }
-            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                @Override
-                public void onComplete(@NonNull Task<Uri> task) {
-                    if (task.isSuccessful()) {
-                        Uri downloadUri = task.getResult();
-
-                        // author.setText(downloadUri.toString());
-                        Log.d("DownloadURL ",downloadUri.toString());
-
-
-                        //get title
-                        String mTitle = addTitle.getText().toString().trim();
-                        //get description
-                        String mDesc = addDescription.getText().toString().trim();
-
-                        //dismiss the progress bar
-                        progressDialog.dismiss();
-
-                        Toast.makeText(ImageAddActivity.this, "Post Uploaded", Toast.LENGTH_SHORT).show();
-
-                        ImageUploadInfo imageUploadInfo = new ImageUploadInfo(mTitle,mDesc,downloadUri.toString(),mTitle.toLowerCase());
-
-                        //getting image upload id
-                        String imageUploadId = mDatabaseReference.push().getKey();
-
-                        //adding image upload id's  child element into databaseReference
-
-                        mDatabaseReference.child(imageUploadId).setValue(imageUploadInfo);
-
-                        finish();
-
-
-                    } else {
-
-
-                        Toast.makeText(ImageAddActivity.this, "upload failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                        progressDialog.dismiss();
-
-                    }
-                }
-            });*/
 
 
         }else {
