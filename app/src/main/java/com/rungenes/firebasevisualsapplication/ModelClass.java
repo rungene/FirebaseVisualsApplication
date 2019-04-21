@@ -1,11 +1,13 @@
 package com.rungenes.firebasevisualsapplication;
 
+import com.google.firebase.database.Exclude;
+
 public class ModelClass {
 
     String title;
     String image;
     String description;
-    //String uid;
+    String uid;
 
     public ModelClass() {
     }
@@ -34,11 +36,13 @@ public class ModelClass {
         this.description = description;
     }
 
-    /*public String getUid() {
+@Exclude
+    public String getUid() {
         return uid;
     }
 
+    @Exclude
     public void setUid(String uid) {
         this.uid = uid;
-    }*/
+    }
 }

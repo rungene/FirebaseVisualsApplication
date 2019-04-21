@@ -70,7 +70,7 @@ public class ImageAddActivity extends AppCompatActivity {
 
     //intent data will be stored in this variables
 
-    String cTitle,cDesc,cImageUrl,cPostId;
+    String cTitle,cDesc,cImageUrl;
 
 
 
@@ -123,7 +123,7 @@ public class ImageAddActivity extends AppCompatActivity {
             cTitle = intent.getString("cTitle");
             cDesc = intent.getString("cDesc");
             cImageUrl = intent.getString("cImageUrl");
-            cPostId = intent.getString("cPostId");
+           // cPostId = intent.getString("cPostId");
 
             //set data into views
 
@@ -205,7 +205,7 @@ public class ImageAddActivity extends AppCompatActivity {
 
     private void deletePreviousImage() {
 
-     if (cImageUrl!=null&& uploadStoragePath.contains(cImageUrl)) {
+    // if (cImageUrl!=null&& uploadStoragePath.contains(cImageUrl)) {
 
          StorageReference pictureReference = getInstance().getReferenceFromUrl(cImageUrl);
 
@@ -227,9 +227,9 @@ public class ImageAddActivity extends AppCompatActivity {
              }
          });
 
-     }else {
+     /*else {
          uploadNewImage();
-     }
+     }*/
 
     }
 
@@ -290,7 +290,11 @@ public class ImageAddActivity extends AppCompatActivity {
 
         //String postId = databaseReference.getKey();
 
+
+
         Query query = databaseReference.orderByChild("title").equalTo(cTitle);
+
+
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -302,13 +306,13 @@ public class ImageAddActivity extends AppCompatActivity {
                     ds.getRef().child("description").setValue(description);
                     ds.getRef().child("image").setValue(s);
 
+
                     /*
                     we are updating data according/which -matches to title in the post(s)
                     *Since title of many posts can be same, in that case it will update all those posts with the same title
                     * so we can add another field "id" to each post and instead of using "title" in orderByChild(),because of  id
                     * of each post will be different,to make "id" different you can use time stamp.
                     * */
-
                     //this child keys must be spelled the same as in your firebase db.
 
                     progressDialog.dismiss();

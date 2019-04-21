@@ -32,6 +32,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.Arrays;
@@ -55,9 +56,10 @@ public class MainActivity extends AppCompatActivity {
     private String uploadStoragePath = "All_Image_Upload/";
 
 
-
     private FirebaseRecyclerAdapter<ModelClass,ViewHolder>  firebaseRecyclerAdapter;
     private FirebaseRecyclerOptions<ModelClass> options;
+    private FirebaseStorage firebaseStorage;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
         //sending the query to the Firebase
         mfirebaseDatabase = FirebaseDatabase.getInstance();
         mRef = mfirebaseDatabase.getReference("Data");
+        firebaseStorage = FirebaseStorage.getInstance();
 
         showData();
         mRef.keepSynced(true);
@@ -187,11 +190,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-    private void showDeleteDataDialog(final String currentTitle, final String currentImageUrl) {
+    private void showDeleteDataDialog(final String currentTitle, final String currentImageUrl, final String currentImageId) {
 
         //alert dialog
-         AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
         alertDialog.setTitle("Delete");
         alertDialog.setMessage("Are you sure you want to delete this post?");
         //set positive/yes button
@@ -200,18 +202,31 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
 
                 //user pressed "Yes",delete data from firebase.
-
                 /*whenever we publish a post the parent key is automatically created
                 since we do not know the key for the items to remove we will first need to query the DB to
                 * determine those keys.
                 * */
-                Query query = mRef.orderByChild("title").equalTo(currentTitle);
-                query.addListenerForSingleValueEvent(new ValueEventListener() {
+
+                //getting image upload id
+                //String imageUploadId = mRef.push().getKey();
+
+
+               //Query query = mRef.orderByChild("title").equalTo(currentImageId);
+
+
+
+                Query query1 = mRef.orderByKey().equalTo(currentImageId);
+
+                Toast.makeText(MainActivity.this, "id"+currentImageId, Toast.LENGTH_SHORT).show();
+
+
+                query1.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                         for (DataSnapshot ds: dataSnapshot.getChildren() ){
 
+                            // String key = dataSnapshot.getKey();
                             ds.getRef().removeValue();//remove values from firebase when title matches.
                         }
                         //show a toast that the post was removed successfully
@@ -254,7 +269,7 @@ public class MainActivity extends AppCompatActivity {
 
                 }
 
-                }
+            }
 
 
 
@@ -279,7 +294,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    //show data
+//show data
 
     private void showData (){
 
@@ -290,7 +305,6 @@ public class MainActivity extends AppCompatActivity {
             protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull ModelClass model) {
 
                 holder.setDetails(getApplicationContext(), model.getTitle(), model.getImage(), model.getDescription());
-
 
             }
 
@@ -304,8 +318,6 @@ public class MainActivity extends AppCompatActivity {
                 ViewHolder viewHolder = new ViewHolder(view);
 
                 //item click listener
-
-
                 viewHolder.setOnClickListener(new ViewHolder.ClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
@@ -314,7 +326,7 @@ public class MainActivity extends AppCompatActivity {
                         String mDesc = getItem(position).getDescription();
 
                         String mImage = getItem(position).getImage();
-                       // String postId = getItem(position).getUid();
+                        // String postId = getItem(position).getUid();
 
 
 
@@ -325,7 +337,7 @@ public class MainActivity extends AppCompatActivity {
                         intent.putExtra("title", mTitle);//put title
                         intent.putExtra("description", mDesc);//put description
                         intent.putExtra("image", mImage);//put image url
-                       // intent.putExtra("uid",postId);//put post id
+                        // intent.putExtra("uid",postId);//put post id
                         startActivity(intent);
 
 
@@ -336,7 +348,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onItemLongClick(View view, int position) {
 
-                       //get the current title
+                        //get the current title
                         final String cTitle = getItem(position).getTitle();
 
 
@@ -348,7 +360,7 @@ public class MainActivity extends AppCompatActivity {
                         final String cImageUrl = getItem(position).getImage();
                         //get the current postId
 
-                      //  final String cPostId= getItem(position).getUid();
+                        final String cImageId= getRef(position).getKey();
 
                         //show dialog on long click
 
@@ -374,7 +386,7 @@ public class MainActivity extends AppCompatActivity {
                                     intent.putExtra("cTitle",cTitle);
                                     intent.putExtra("cDesc",cDesc);
                                     intent.putExtra("cImageUrl",cImageUrl);
-                                   // intent.putExtra("cPostId",cPostId);
+                                    //   intent.putExtra("cPostId",cPostId);
                                     startActivity(intent);
 
                                 } if (which==1){
@@ -382,7 +394,7 @@ public class MainActivity extends AppCompatActivity {
                                     //delete click
                                     //method call
 
-                                        showDeleteDataDialog(cTitle, cImageUrl);
+                                    showDeleteDataDialog(cTitle, cImageUrl,cImageId);
 
                                 }
 
@@ -414,7 +426,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-
 
     //search the data
     private void firebaseSearch(String textSearch) {
@@ -484,7 +495,7 @@ public class MainActivity extends AppCompatActivity {
                         final String cImageUrl = getItem(position).getImage();
                         //get the current postId
 
-                       // final String cPostId= getItem(position).getUid();
+                        final String cImageId= getRef(position).getKey();
 
 
                         //show dialog on long click
@@ -515,7 +526,7 @@ public class MainActivity extends AppCompatActivity {
                                 if (which==1){
                                     //delete click
                                     //method call
-                                        showDeleteDataDialog(cTitle, cImageUrl);
+                                        showDeleteDataDialog(cTitle, cImageUrl,cImageId);
                                     }
 
 
@@ -615,14 +626,20 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
     //load data to recyclerview on start
-
     @Override
     protected void onStart() {
         super.onStart();
         if (firebaseRecyclerAdapter!=null){
             firebaseRecyclerAdapter.startListening();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (firebaseRecyclerAdapter!=null){
+            firebaseRecyclerAdapter.stopListening();
         }
     }
 

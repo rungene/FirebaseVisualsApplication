@@ -77,6 +77,7 @@ public class ViewHolder extends RecyclerView.ViewHolder {
         Picasso.get().load(image).into(imageViewRow);
         textViewDescription.setText(description);
 
+
     }
 
 

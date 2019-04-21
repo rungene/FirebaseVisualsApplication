@@ -8,6 +8,7 @@ public class ImageUploadInfo {
     String image;
     String search;
 
+
     public ImageUploadInfo() {
     }
 
@@ -16,6 +17,7 @@ public class ImageUploadInfo {
         this.description = description;
         this.image = image;
         this.search = search;
+
     }
 
     public String getTitle() {
