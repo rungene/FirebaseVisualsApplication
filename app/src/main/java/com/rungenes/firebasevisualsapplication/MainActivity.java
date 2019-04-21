@@ -386,7 +386,7 @@ public class MainActivity extends AppCompatActivity {
                                     intent.putExtra("cTitle",cTitle);
                                     intent.putExtra("cDesc",cDesc);
                                     intent.putExtra("cImageUrl",cImageUrl);
-                                    //   intent.putExtra("cPostId",cPostId);
+                                    intent.putExtra("cImageId",cImageId);
                                     startActivity(intent);
 
                                 } if (which==1){
@@ -520,7 +520,7 @@ public class MainActivity extends AppCompatActivity {
                                     intent.putExtra("cTitle",cTitle);
                                     intent.putExtra("cDesc",cDesc);
                                     intent.putExtra("cImageUrl",cImageUrl);
-                                    //intent.putExtra("cPostId",cPostId);
+                                    intent.putExtra("cImageId",cImageId);
                                     startActivity(intent);
                                 }
                                 if (which==1){

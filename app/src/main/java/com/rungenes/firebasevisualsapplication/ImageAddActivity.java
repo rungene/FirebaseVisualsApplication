@@ -70,7 +70,7 @@ public class ImageAddActivity extends AppCompatActivity {
 
     //intent data will be stored in this variables
 
-    String cTitle,cDesc,cImageUrl;
+    String cTitle,cDesc,cImageUrl,cImageId;
 
 
 
@@ -123,7 +123,7 @@ public class ImageAddActivity extends AppCompatActivity {
             cTitle = intent.getString("cTitle");
             cDesc = intent.getString("cDesc");
             cImageUrl = intent.getString("cImageUrl");
-           // cPostId = intent.getString("cPostId");
+            cImageId = intent.getString("cImageId");
 
             //set data into views
 
@@ -205,33 +205,36 @@ public class ImageAddActivity extends AppCompatActivity {
 
     private void deletePreviousImage() {
 
-    // if (cImageUrl!=null&& uploadStoragePath.contains(cImageUrl)) {
+         if (cImageUrl!=null&& uploadStoragePath.contains(cImageUrl)) {
 
-         StorageReference pictureReference = getInstance().getReferenceFromUrl(cImageUrl);
+        StorageReference pictureReference = getInstance().getReferenceFromUrl(cImageUrl);
 
-         pictureReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-             @Override
-             public void onSuccess(Void aVoid) {
-                 //deleted
-                 Toast.makeText(ImageAddActivity.this, "Previous image deleted...", Toast.LENGTH_SHORT).show();
-                 //upload new image and get its url
-                 uploadNewImage();
-             }
-         }).addOnFailureListener(new OnFailureListener() {
-             @Override
-             public void onFailure(@NonNull Exception e) {
-                 //failed
-                 //get and show the error message
-                 Toast.makeText(ImageAddActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                 progressDialog.dismiss();
-             }
-         });
+        pictureReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                //deleted
+                Toast.makeText(ImageAddActivity.this, "Previous image deleted...", Toast.LENGTH_SHORT).show();
+                //upload new image and get its url
+                uploadNewImage();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                //failed
+                //get and show the error message
+                Toast.makeText(ImageAddActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
+            }
+        });
+    }
 
-     /*else {
-         uploadNewImage();
-     }*/
+else {
+            uploadNewImage();
+        }
 
     }
+
+
 
     private void uploadNewImage() {
 
@@ -292,7 +295,9 @@ public class ImageAddActivity extends AppCompatActivity {
 
 
 
-        Query query = databaseReference.orderByChild("title").equalTo(cTitle);
+       // Query query = databaseReference.orderByChild("title").equalTo(cTitle);
+
+        Query query = databaseReference.orderByKey().equalTo(cImageId);
 
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
