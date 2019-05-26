@@ -1,11 +1,12 @@
 package com.rungenes.firebasevisualsapplication;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
@@ -31,6 +32,8 @@ public class ViewHolder extends RecyclerView.ViewHolder {
                     if (position != RecyclerView.NO_POSITION) {
 
                         mClickListener.onItemClick(view, position);
+
+
                     }
                 }
 

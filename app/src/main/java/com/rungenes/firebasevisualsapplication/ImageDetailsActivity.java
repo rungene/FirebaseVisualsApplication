@@ -10,15 +10,16 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.annotation.NonNull;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.github.chrisbanes.photoview.PhotoView;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -30,7 +31,9 @@ import java.util.Locale;
 public class ImageDetailsActivity extends AppCompatActivity {
 
     TextView textViewTitleDetails, textViewDescriptionDetails;
-    ImageView imageViewRowDetails;
+
+    //https://github.com/chrisbanes/PhotoView zoooming in  and out
+    PhotoView imageViewRowDetails;
     Button buttonSave, buttonShare, buttonWall;
     Bitmap bitmap;
     private static final int WRITE_EXTERNAL_STORAGE_CODE = 1;
@@ -54,7 +57,9 @@ public class ImageDetailsActivity extends AppCompatActivity {
 
         textViewTitleDetails = findViewById(R.id.textViewTitleDetails);
         textViewDescriptionDetails = findViewById(R.id.textViewDescriptionDetails);
-        imageViewRowDetails = findViewById(R.id.imageViewRowDetails);
+
+        imageViewRowDetails = findViewById(R.id.photo_view);
+
         buttonSave = findViewById(R.id.buttonSave);
         buttonShare = findViewById(R.id.buttonShare);
         buttonWall = findViewById(R.id.buttonWall);
@@ -71,6 +76,10 @@ public class ImageDetailsActivity extends AppCompatActivity {
         textViewDescriptionDetails.setText(description);
 
         Picasso.get().load(image).into(imageViewRowDetails);
+
+
+
+
 
 
 
@@ -129,6 +138,8 @@ public class ImageDetailsActivity extends AppCompatActivity {
                 setImageWallpaper();
             }
         });
+
+
 
 
     }

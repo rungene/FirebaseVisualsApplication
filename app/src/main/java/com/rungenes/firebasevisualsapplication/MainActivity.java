@@ -4,13 +4,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,6 +24,7 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.ActionCodeSettings;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -47,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences mSharedPreferences;//saving sorting settings
    // private Button btnLogout;
     private FirebaseAuth mAuth;
+
     private FirebaseAuth.AuthStateListener mAuthListener;
 
     // Choose an arbitrary request code value
@@ -67,7 +69,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
        // FacebookSdk.sdkInitialize(getApplicationContext());
-
 
 
         mAuth = FirebaseAuth.getInstance();
@@ -118,30 +119,55 @@ public class MainActivity extends AppCompatActivity {
 
                 FirebaseUser user = firebaseAuth.getCurrentUser();
 
-                if (user!= null){
+                if (user != null) {
                     //signed in user
                     onInitializeSignedin(user.getDisplayName());
 
 
                     //      startActivity(new Intent(MainActivity.this,LoginActivity.class));
-                }else {
+                } else {
                     //user is signed out
                     onSignedOutCleanup();
 
-                    startActivityForResult(
-                            AuthUI.getInstance()
-                                    .createSignInIntentBuilder()
-                                    .setAvailableProviders(Arrays.asList(
-                                            new AuthUI.IdpConfig.GoogleBuilder().build(),
-                                            new AuthUI.IdpConfig.EmailBuilder().build()
 
-                                    ))
-                                    .build(),
-                            RC_SIGN_IN);
+
+
+
+                    ActionCodeSettings actionCodeSettings = ActionCodeSettings
+                            .newBuilder()
+                            .setAndroidPackageName("com.rungenes.firebasevisualsapplication", /*installIfNotAvailable*/false, /*minimumVersion*/null)
+                            .setHandleCodeInApp(true)
+                            .setUrl("https://imageuploadfirebase-5d152.firebaseapp.com") // This URL needs to be whitelisted
+                            .build();
+               /*     if (AuthUI.canHandleIntent(getIntent())) {
+                        if (getIntent().getExtras() != null) {
+                            return;
+                        }
+                        String link = getIntent().getExtras().getString(ExtraConstants.EMAIL_LINK_SIGN_IN);
+                        if (link != null) {*/
+                            startActivityForResult(
+
+                                    AuthUI.getInstance()
+                                            .createSignInIntentBuilder()
+                                            //.setEmailLink(link)
+                                            .setAvailableProviders(Arrays.asList(
+                                                    new AuthUI.IdpConfig.GoogleBuilder().build(),
+                                                    new AuthUI.IdpConfig.EmailBuilder().enableEmailLinkSignIn()
+                                                            .setActionCodeSettings(actionCodeSettings).build())).build(),
+                                    RC_SIGN_IN);
+
+
+                        }
+
+
 
                 }
-            }
-        };
+
+                };
+
+
+
+
 
 
     }
@@ -161,6 +187,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+
+
     @Override
     protected void onPause() {
 
@@ -173,6 +202,8 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         mAuth.addAuthStateListener(mAuthListener);
     }
+
+
 
 
 
@@ -339,6 +370,7 @@ public class MainActivity extends AppCompatActivity {
                         intent.putExtra("image", mImage);//put image url
                         // intent.putExtra("uid",postId);//put post id
                         startActivity(intent);
+
 
 
                     }
@@ -630,6 +662,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
         if (firebaseRecyclerAdapter!=null){
             firebaseRecyclerAdapter.startListening();
         }

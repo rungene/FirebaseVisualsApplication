@@ -33,20 +33,13 @@
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 1
-        },
         "appinvite_service": {
-          "status": 2,
           "other_platform_oauth_client": [
             {
               "client_id": "588345326481-4u9htpie5et6hng059prs5p4b3p8pj3e.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
-        },
-        "ads_service": {
-          "status": 2
         }
       }
     },
@@ -67,6 +60,14 @@
           }
         },
         {
+          "client_id": "588345326481-dpecacc8m3qatvd3q1q9sac3b3p6cks4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rungenes.firebasevisualsapplication",
+            "certificate_hash": "3ab9fbd612c3496dc5989f5ac19ef624d0afb4a5"
+          }
+        },
+        {
           "client_id": "588345326481-4u9htpie5et6hng059prs5p4b3p8pj3e.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -77,20 +78,13 @@
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 1
-        },
         "appinvite_service": {
-          "status": 2,
           "other_platform_oauth_client": [
             {
               "client_id": "588345326481-4u9htpie5et6hng059prs5p4b3p8pj3e.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
-        },
-        "ads_service": {
-          "status": 2
         }
       }
     }
