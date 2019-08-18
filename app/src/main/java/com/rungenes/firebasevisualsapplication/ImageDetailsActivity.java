@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -18,6 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 
 import com.github.chrisbanes.photoview.PhotoView;
 import com.squareup.picasso.Picasso;
@@ -183,8 +183,17 @@ public class ImageDetailsActivity extends AppCompatActivity {
             //intent to share image and text
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             intent.putExtra(Intent.EXTRA_TEXT,stringDetails);//put text
-            intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));//
+
+            intent.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(ImageDetailsActivity.this,
+                    BuildConfig.APPLICATION_ID +".fileprovider",
+                    file));
+           /* intent.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile
+                    (ImageDetailsActivity.this,this.getApplicationContext().getPackageName()
+                            +"com.rungenes.firebasevisualsapplication.fileprovider",file));*/
+
+           // intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));//
             intent.setType("image/png");
             startActivity(Intent.createChooser(intent,"Share Via"));
 
