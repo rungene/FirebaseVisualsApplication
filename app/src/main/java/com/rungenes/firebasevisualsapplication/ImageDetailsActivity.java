@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -207,6 +208,9 @@ public class ImageDetailsActivity extends AppCompatActivity {
     }
 
     private void saveImage() {
+
+        String currentPhotoPath;
+
         //time stamp for image name
         bitmap = ((BitmapDrawable) imageViewRowDetails.getDrawable()).getBitmap();
 
@@ -215,15 +219,24 @@ public class ImageDetailsActivity extends AppCompatActivity {
 
         //Path to external storage
         File path = Environment.getExternalStorageDirectory();
+
+        //File path = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+
         //create a folder named "MDS"
 
         File directory = new File(path + "/MDS/");
+
         directory.mkdirs();
 
         //image name
         String imageName = timeStamp + ".PNG";
 
+
+
         File file = new File(directory, imageName);
+
+
+        currentPhotoPath = directory.getAbsolutePath();
 
         OutputStream out;
 
@@ -232,7 +245,15 @@ public class ImageDetailsActivity extends AppCompatActivity {
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
             out.flush();
             out.close();
-            Toast.makeText(this, imageName + "saved to" + directory, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, imageName + "Image saved gallery" + directory, Toast.LENGTH_SHORT).show();
+
+            //add picture to Android Gallery
+
+            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+            File f = new File(currentPhotoPath);
+            Uri contentUri = Uri.fromFile(f);
+            mediaScanIntent.setData(contentUri);
+            this.sendBroadcast(mediaScanIntent);
 
 
         } catch (Exception e) {
