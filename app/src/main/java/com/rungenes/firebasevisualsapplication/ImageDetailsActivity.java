@@ -201,7 +201,7 @@ public class ImageDetailsActivity extends AppCompatActivity {
 
 
         } catch (Exception e) {
-            Toast.makeText(this,e.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"Please await the image to load", Toast.LENGTH_SHORT).show();
 
         }
 
@@ -209,58 +209,70 @@ public class ImageDetailsActivity extends AppCompatActivity {
 
     private void saveImage() {
 
-        String currentPhotoPath;
-
-        //time stamp for image name
-        bitmap = ((BitmapDrawable) imageViewRowDetails.getDrawable()).getBitmap();
-
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss",
-                Locale.getDefault()).format(System.currentTimeMillis());
-
-        //Path to external storage
-        File path = Environment.getExternalStorageDirectory();
-
-        //File path = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-
-        //create a folder named "MDS"
-
-        File directory = new File(path + "/MDS/");
-
-        directory.mkdirs();
-
-        //image name
-        String imageName = timeStamp + ".PNG";
-
-
-
-        File file = new File(directory, imageName);
-
-
-        currentPhotoPath = directory.getAbsolutePath();
-
-        OutputStream out;
 
         try {
-            out = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
-            out.flush();
-            out.close();
-            Toast.makeText(this, imageName + "Image saved gallery" + directory, Toast.LENGTH_SHORT).show();
+            String currentPhotoPath;
 
-            //add picture to Android Gallery
+            //time stamp for image name
+            bitmap = ((BitmapDrawable) imageViewRowDetails.getDrawable()).getBitmap();
 
-            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-            File f = new File(currentPhotoPath);
-            Uri contentUri = Uri.fromFile(f);
-            mediaScanIntent.setData(contentUri);
-            this.sendBroadcast(mediaScanIntent);
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss",
+                    Locale.getDefault()).format(System.currentTimeMillis());
+
+            //Path to external storage
+            File path = Environment.getExternalStorageDirectory();
 
 
-        } catch (Exception e) {
 
-            //failed to save
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            //File path = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+
+            //create a folder named "MDS"
+
+            File directory = new File(path + "/MDS/");
+
+            directory.mkdirs();
+
+            //image name
+            String imageName = timeStamp + ".PNG";
+
+
+
+            File file = new File(directory, imageName);
+
+
+
+            currentPhotoPath = file.getAbsolutePath();
+
+            OutputStream out;
+
+            try {
+                out = new FileOutputStream(file);
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+                out.flush();
+                out.close();
+                Toast.makeText(this, imageName + "Image saved gallery" + directory, Toast.LENGTH_SHORT).show();
+
+                //add picture to Android Gallery
+
+                Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                File f = new File(currentPhotoPath);
+                Uri contentUri = Uri.fromFile(f);
+                mediaScanIntent.setData(contentUri);
+                this.sendBroadcast(mediaScanIntent);
+
+
+            } catch (Exception e) {
+
+                //failed to save
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+
+        }catch (Exception e){
+
+            Toast.makeText(this, "Please await the image to load", Toast.LENGTH_SHORT).show();
         }
+
+
 
     }
     //handling onback pressed (open previous activity)
@@ -291,4 +303,6 @@ public class ImageDetailsActivity extends AppCompatActivity {
         }
 
     }
+
+
 }
