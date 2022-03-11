@@ -244,9 +244,9 @@ class MainActivity : AppCompatActivity() {
             override fun onBindViewHolder(holder: ViewHolder, position: Int, model: ModelClass) {
                 holder.setDetails(
                     applicationContext,
-                    model.getTitle(),
-                    model.getImage(),
-                    model.getDescription()
+                    model.title,
+                    model.image,
+                    model.description
                 )
             }
 
@@ -261,9 +261,9 @@ class MainActivity : AppCompatActivity() {
                 viewHolder.setOnClickListener(object : ClickListener {
                     override fun onItemClick(view: View, position: Int) {
                         //gettting data from firebase from the position clicked.
-                        val mTitle = getItem(position).getTitle()
-                        val mDesc = getItem(position).getDescription()
-                        val mImage = getItem(position).getImage()
+                        val mTitle = getItem(position).title
+                        val mDesc = getItem(position).description
+                        val mImage = getItem(position).image
                         // String postId = getItem(position).getUid();
 
 
@@ -279,14 +279,14 @@ class MainActivity : AppCompatActivity() {
                     override fun onItemLongClick(view: View, position: Int) {
 
                         //get the current title
-                        val cTitle = getItem(position).getTitle()
+                        val cTitle = getItem(position).title
 
 
                         //get the current description
-                        val cDesc = getItem(position).getDescription()
+                        val cDesc = getItem(position).description
 
                         //get the current image url
-                        val cImageUrl = getItem(position).getImage()
+                        val cImageUrl = getItem(position).image
                         //get the current postId
                         val cImageId = getRef(position).key
 
@@ -346,9 +346,9 @@ class MainActivity : AppCompatActivity() {
             override fun onBindViewHolder(holder: ViewHolder, position: Int, model: ModelClass) {
                 holder.setDetails(
                     applicationContext,
-                    model.getTitle(),
-                    model.getImage(),
-                    model.getDescription()
+                    model.title,
+                    model.image,
+                    model.description
                 )
             }
 
@@ -363,9 +363,9 @@ class MainActivity : AppCompatActivity() {
                 viewHolder.setOnClickListener(object : ClickListener {
                     override fun onItemClick(view: View, position: Int) {
                         //gettting data from firebase from the position clicked.
-                        val mTitle = getItem(position).getTitle()
-                        val mDesc = getItem(position).getDescription()
-                        val mImage = getItem(position).getImage()
+                        val mTitle = getItem(position).title
+                        val mDesc = getItem(position).description
+                        val mImage = getItem(position).image
                         //String postId = getItem(position).getUid();
 
                         //passing data to the new activity
@@ -379,14 +379,14 @@ class MainActivity : AppCompatActivity() {
 
                     override fun onItemLongClick(view: View, position: Int) {
                         //get the current title
-                        val cTitle = getItem(position).getTitle()
+                        val cTitle = getItem(position).title
 
 
                         //get the current description
-                        val cDesc = getItem(position).getDescription()
+                        val cDesc = getItem(position).description
 
                         //get the current image url
-                        val cImageUrl = getItem(position).getImage()
+                        val cImageUrl = getItem(position).image
                         //get the current postId
                         val cImageId = getRef(position).key
 
