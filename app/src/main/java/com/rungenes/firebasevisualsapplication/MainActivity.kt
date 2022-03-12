@@ -259,7 +259,7 @@ class MainActivity : AppCompatActivity() {
 
                 //item click listener
                 viewHolder.setOnClickListener(object : ClickListener {
-                    override fun onItemClick(view: View, position: Int) {
+                    override fun onItemClick(view: View?, position: Int) {
                         //gettting data from firebase from the position clicked.
                         val mTitle = getItem(position).title
                         val mDesc = getItem(position).description
@@ -268,7 +268,7 @@ class MainActivity : AppCompatActivity() {
 
 
                         //passing data to the new activity
-                        val intent = Intent(view.context, ImageDetailsActivity::class.java)
+                        val intent = Intent(view?.context, ImageDetailsActivity::class.java)
                         intent.putExtra("title", mTitle) //put title
                         intent.putExtra("description", mDesc) //put description
                         intent.putExtra("image", mImage) //put image url
@@ -276,7 +276,7 @@ class MainActivity : AppCompatActivity() {
                         startActivity(intent)
                     }
 
-                    override fun onItemLongClick(view: View, position: Int) {
+                    override fun onItemLongClick(view: View?, position: Int) {
 
                         //get the current title
                         val cTitle = getItem(position).title
@@ -361,7 +361,7 @@ class MainActivity : AppCompatActivity() {
 
                 //item click listener
                 viewHolder.setOnClickListener(object : ClickListener {
-                    override fun onItemClick(view: View, position: Int) {
+                    override fun onItemClick(view: View?, position: Int) {
                         //gettting data from firebase from the position clicked.
                         val mTitle = getItem(position).title
                         val mDesc = getItem(position).description
@@ -369,7 +369,7 @@ class MainActivity : AppCompatActivity() {
                         //String postId = getItem(position).getUid();
 
                         //passing data to the new activity
-                        val intent = Intent(view.context, ImageDetailsActivity::class.java)
+                        val intent = Intent(view?.context, ImageDetailsActivity::class.java)
                         intent.putExtra("title", mTitle) //put title
                         intent.putExtra("description", mDesc) //put description
                         intent.putExtra("image", mImage) //put image url
@@ -377,7 +377,7 @@ class MainActivity : AppCompatActivity() {
                         startActivity(intent)
                     }
 
-                    override fun onItemLongClick(view: View, position: Int) {
+                    override fun onItemLongClick(view: View?, position: Int) {
                         //get the current title
                         val cTitle = getItem(position).title
 
