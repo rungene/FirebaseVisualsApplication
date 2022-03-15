@@ -14,12 +14,9 @@ class ViewHolder(var view: View) : RecyclerView.ViewHolder(view) {
     //setting details to recyclerview row
     fun setDetails(context: Context?, title: String?, image: String?, description: String?) {
         //views
-        val textViewTitle: TextView
-        val textViewDescription: TextView
-        val imageViewRow: ImageView
-        textViewTitle = view.findViewById(R.id.textViewTitle)
-        textViewDescription = view.findViewById(R.id.textViewDescription)
-        imageViewRow = view.findViewById(R.id.imageViewRow)
+        val textViewTitle: TextView = view.findViewById(R.id.textViewTitle)
+        val textViewDescription: TextView = view.findViewById(R.id.textViewDescription)
+        val imageViewRow: ImageView = view.findViewById(R.id.imageViewRow)
 
         /*       ModelClass modelClass = new ModelClass();
 
