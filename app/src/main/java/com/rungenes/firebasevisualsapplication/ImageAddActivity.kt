@@ -228,7 +228,7 @@ class ImageAddActivity() : AppCompatActivity() {
                 //update data
                 for (ds: DataSnapshot in dataSnapshot.children) {
                     ds.ref.child("title").setValue(title)
-                    ds.ref.child("search").setValue(title.toLowerCase())
+                    ds.ref.child("search").setValue(title.lowercase())
                     ds.ref.child("description").setValue(description)
                     ds.ref.child("image").setValue(s)
 
