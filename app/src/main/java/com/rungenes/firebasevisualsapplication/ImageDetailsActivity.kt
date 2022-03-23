@@ -215,6 +215,7 @@ class ImageDetailsActivity : AppCompatActivity() {
         permissions: Array<String>,
         grantResults: IntArray
     ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             WRITE_EXTERNAL_STORAGE_CODE -> {
 
