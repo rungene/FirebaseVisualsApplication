@@ -9,8 +9,8 @@
         android:icon="@drawable/billboards"
         android:title="@string/billboards" />
     <item
-        android:id="@+id/streetpoles"
-        android:icon="@drawable/streetpole"
+        android:id="@+id/street_poles"
+        android:icon="@drawable/street_pole"
         android:title="@string/street_poles" />
 
 </menu>
