@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/mds_signs"
+        android:icon="@drawable/mds_signs"
+        android:title="@string/multi_directional_signs" />
+    <item
+        android:id="@+id/billboards"
+        android:icon="@drawable/billboards"
+        android:title="@string/billboards" />
+    <item
+        android:id="@+id/street_poles"
+        android:icon="@drawable/street_pole"
+        android:title="@string/street_poles" />
+
+</menu>
