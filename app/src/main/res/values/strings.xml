@@ -13,7 +13,7 @@
     <string name="add_description">Enter description</string>
     <string name="add_title">Enter road name</string>
     <string name="rename_button_upload">Update</string>
-    <string name="multi_directional_signs">MDS</string>
+    <string name="directional_signs">Directional Signs</string>
     <string name="billboards">Billboards</string>
     <string name="street_poles">Street Poles</string>
 </resources>
