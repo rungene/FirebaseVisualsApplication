@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/directional_signs"
-        android:icon="@drawable/mds_signs"
+        android:icon="@drawable/directional_signs"
         android:title="@string/directional_signs" />
     <item
         android:id="@+id/billboards"
