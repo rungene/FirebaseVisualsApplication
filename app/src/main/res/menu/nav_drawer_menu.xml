@@ -6,7 +6,7 @@
         android:title="@string/directional_signs" />
     <item
         android:id="@+id/billboards"
-        android:icon="@drawable/billboards"
+        android:icon="@drawable/billboard"
         android:title="@string/billboards" />
     <item
         android:id="@+id/street_poles"
