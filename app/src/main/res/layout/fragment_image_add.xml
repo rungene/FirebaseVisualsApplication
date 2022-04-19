@@ -21,14 +21,14 @@
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
         <EditText
+            android:id="@+id/addTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/add_title"
-            android:singleLine="true"
-            android:id="@+id/addTitle"
             android:background="@drawable/edittextstyles"
+            android:hint="@string/add_title"
+            android:minHeight="48dp"
             android:padding="10dp"
-            />
+            android:singleLine="true" />
         <ImageView
             android:id="@+id/addImage"
             android:layout_width="match_parent"
