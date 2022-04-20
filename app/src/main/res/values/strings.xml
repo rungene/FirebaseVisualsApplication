@@ -16,6 +16,4 @@
     <string name="directional_signs">Directional Signs</string>
     <string name="billboards">Billboards</string>
     <string name="street_poles">Street Poles</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
