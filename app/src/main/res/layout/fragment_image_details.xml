@@ -1,14 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardBackgroundColor="#fff"
+    app:contentPadding="5dp"
+    app:cardCornerRadius="3dp"
+    app:cardUseCompatPadding="true"
     tools:context=".ImageDetailsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+            <TextView
+                android:id="@+id/textViewTitleDetails"
+                android:text="@string/textview_title"
+                android:textColor="#000"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textStyle="bold"
+                />
 
-</FrameLayout>
+            <com.github.chrisbanes.photoview.PhotoView
+                android:id="@+id/photo_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="fitXY"
+                android:adjustViewBounds="true"
+                android:background="@drawable/loadingimage"
+                />
+
+            <TextView
+                android:id="@+id/textViewDescriptionDetails"
+                android:text="@string/textview_description"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+                <Button
+                    android:id="@+id/buttonSave"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/button_save"
+                    app:icon="@drawable/ic_action_save"
+                    android:layout_weight="1"
+                    style="@style/Base.Widget.AppCompat.Button.Colored"
+
+                    />
+                <Button
+                    android:id="@+id/buttonShare"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/button_share"
+                    app:icon="@drawable/ic_action_share"
+                    android:layout_weight="1"
+                    style="@style/Base.Widget.AppCompat.Button.Colored"
+
+                    />
+                <Button
+                    android:id="@+id/buttonWall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/button_wallpaper"
+                    app:icon="@drawable/ic_action_wall"
+                    android:layout_weight="1"
+                    style="@style/Base.Widget.AppCompat.Button.Colored" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.cardview.widget.CardView>
