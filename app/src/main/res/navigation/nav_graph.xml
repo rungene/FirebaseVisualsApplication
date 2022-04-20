@@ -10,4 +10,14 @@
         android:name="com.rungenes.firebasevisualsapplication.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/imageAddFragment"
+        android:name="com.rungenes.firebasevisualsapplication.ImageAddFragment"
+        android:label="fragment_image_add"
+        tools:layout="@layout/fragment_image_add" />
+    <fragment
+        android:id="@+id/imageDetailsFragment"
+        android:name="com.rungenes.firebasevisualsapplication.ImageDetailsFragment"
+        android:label="fragment_image_details"
+        tools:layout="@layout/fragment_image_details" />
 </navigation>
