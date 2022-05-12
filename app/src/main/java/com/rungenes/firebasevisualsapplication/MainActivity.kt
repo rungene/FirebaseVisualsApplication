@@ -102,21 +102,7 @@ class MainActivity : AppCompatActivity() {
                 onSignedOutCleanup()
 
 
-/*
-                    ActionCodeSettings actionCodeSettings = ActionCodeSettings
-                            .newBuilder()
-                            .setAndroidPackageName("com.rungenes.firebasevisualsapplication", */
-                /*installIfNotAvailable*/ /*false, */ /*minimumVersion*/ /*null)
-                            .setHandleCodeInApp(true)
-                            .setUrl("https://imageuploadfirebase-5d152.firebaseapp.com") // This URL needs to be whitelisted
-                            .build();*/
-
-                /*     if (AuthUI.canHandleIntent(getIntent())) {
-                            if (getIntent().getExtras() != null) {
-                                return;
-                            }
-                            String link = getIntent().getExtras().getString(ExtraConstants.EMAIL_LINK_SIGN_IN);
-                            if (link != null) {*/startActivityForResult(
+startActivityForResult(
                     AuthUI.getInstance()
                         .createSignInIntentBuilder() //.setEmailLink(link)
                         .setAvailableProviders(
@@ -430,74 +416,7 @@ class MainActivity : AppCompatActivity() {
         mRecyclerview!!.adapter = firebaseRecyclerAdapter
 
 
-/*
-        FirebaseRecyclerAdapter<ModelClass, ViewHolder> firebaseRecyclerAdapter =
-                new FirebaseRecyclerAdapter<ModelClass, ViewHolder>(
-                        ModelClass.class,
-                        R.layout.rowitem,
-                        ViewHolder.class,
-                        firebaseQuery
 
-                ) {
-                    @Override
-                    protected void populateViewHolder(ViewHolder viewHolder, ModelClass model, int position) {
-
-
-                        viewHolder.setDetails(getApplicationContext(), model.getTitle(), model.getImage(), model.getDescription());
-
-                    }
-                    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
-                        ViewHolder viewHolder = super.onCreateViewHolder(parent, viewType);
-
-
-                        viewHolder.setOnClickListener(new ViewHolder.ClickListener() {
-                            @Override
-                            public void onItemClick(View view, int position) {
-                          */
-/*    //views
-                                TextView mTitle = findViewById(R.id.textViewTitle);
-                                TextView mDesc = findViewById(R.id.textViewDescription);
-                                ImageView mImage = findViewById(R.id.imageViewRow);*/
-        /*
-
-
-                                //gettting data from firebase from the position clicked.
-                                String mTitle = getItem(position).getTitle();
-                                String mDesc = getItem(position).getDescription();
-
-                                String mImage = getItem(position).getImage();
-
-
-
-
-
-                                //passing data to the new activity
-                                Intent intent = new Intent(view.getContext(), ImageDetailsActivity.class);
-
-                                intent.putExtra("title", mTitle);//put title
-                                intent.putExtra("description", mDesc);//put description
-                                intent.putExtra("image", mImage);//put image url
-                                startActivity(intent);
-
-
-                            }
-
-                            @Override
-                            public void onItemLongClick(View view, int position) {
-
-                            }
-                        });
-
-
-                        return viewHolder;
-                    }
-
-
-                };
-        //set adapter to recyclerview
-        mRecyclerview.setAdapter(firebaseRecyclerAdapter);
-*/
     }
 
     //load data to recyclerview on start
