@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // FacebookSdk.sdkInitialize(getApplicationContext());
+
         mAuth = FirebaseAuth.getInstance()
         mRecyclerview = findViewById(R.id.recyclerView)
         val actionBar = supportActionBar
