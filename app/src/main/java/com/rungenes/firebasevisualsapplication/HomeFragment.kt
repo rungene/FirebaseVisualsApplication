@@ -25,6 +25,8 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         mRecyclerview = view.findViewById(R.id.recyclerView)
+
+        mRecyclerview?.setHasFixedSize(true)
     }
 
 
