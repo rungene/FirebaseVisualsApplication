@@ -1,6 +1,7 @@
 package com.rungenes.firebasevisualsapplication
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -8,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.database.FirebaseRecyclerAdapter
@@ -25,9 +27,12 @@ class HomeFragment : Fragment() {
     private var options: FirebaseRecyclerOptions<ModelClass>? = null
     private var mRef: DatabaseReference? = null
     private var firebaseRecyclerAdapter: FirebaseRecyclerAdapter<ModelClass, ViewHolder>? = null
+    //sorting
     private var mLayoutManager: LinearLayoutManager? = null
     //Folder path to Firebase storage.
     private val uploadStoragePath = "All_Image_Upload/"
+    //saving sorting settings
+    private var mSharedPreferences: SharedPreferences? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -225,6 +230,28 @@ class HomeFragment : Fragment() {
 
         //set adapter to firebase recyclerview
         mRecyclerview!!.adapter = firebaseRecyclerAdapter
+    }
+
+    private fun sorting(){
+        //since the default value is the newest so for the first time it will display newest post first.
+        mSharedPreferences = requireContext().getSharedPreferences("SortingSettings", AppCompatActivity.MODE_PRIVATE)
+        val mSorting = mSharedPreferences?.getString("Sort", "newest") //where no setting is selected
+
+
+        //newest becomes the default
+        if (mSorting == "newest") {
+            mLayoutManager = LinearLayoutManager(requireContext())
+
+            //this will load the items from the bottom means newest  first.
+            mLayoutManager!!.reverseLayout = true
+            mLayoutManager!!.stackFromEnd = true
+        } else if (mSorting == "oldest") {
+            mLayoutManager = LinearLayoutManager(requireContext())
+
+            //this will load the items from the bottom means oldest  first.
+            mLayoutManager!!.reverseLayout = false
+            mLayoutManager!!.stackFromEnd = false
+        }
     }
 
 }
