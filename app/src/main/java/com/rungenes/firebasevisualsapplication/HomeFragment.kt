@@ -48,7 +48,10 @@ class HomeFragment : Fragment() {
 
         mRecyclerview = view.findViewById(R.id.recyclerView)
 
+        sorting()
+
         mRecyclerview?.setHasFixedSize(true)
+
         showData()
     }
 
