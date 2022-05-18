@@ -357,4 +357,12 @@ class HomeFragment : Fragment() {
         }
     }
 
+    //load data to recyclerview on start
+    override fun onStart() {
+        super.onStart()
+        if (firebaseRecyclerAdapter != null) {
+            firebaseRecyclerAdapter!!.startListening()
+        }
+    }
+
 }
