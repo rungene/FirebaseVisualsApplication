@@ -235,6 +235,106 @@ class HomeFragment : Fragment() {
         mRecyclerview!!.adapter = firebaseRecyclerAdapter
     }
 
+    //search the data
+    private fun firebaseSearch(textSearch: String) {
+        //convert string entered in serchview to lower case
+        val query = textSearch.toLowerCase()
+        val firebaseQuery = mRef!!.orderByChild("search").startAt(query).endAt(query + "\uf8ff")
+        options = FirebaseRecyclerOptions.Builder<ModelClass>()
+            .setQuery(firebaseQuery, ModelClass::class.java).build()
+        firebaseRecyclerAdapter = object : FirebaseRecyclerAdapter<ModelClass, ViewHolder>(
+            options!!
+        ) {
+            override fun onBindViewHolder(holder: ViewHolder, position: Int, model: ModelClass) {
+                holder.setDetails(
+                    requireContext(),
+                    model.title,
+                    model.image,
+                    model.description
+                )
+            }
+
+            override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ViewHolder {
+
+                //inflating layout row.xml
+                val view = LayoutInflater.from(viewGroup.context)
+                    .inflate(R.layout.rowitem, viewGroup, false)
+                val viewHolder = ViewHolder(view)
+
+                //item click listener
+                viewHolder.setOnClickListener(object : ViewHolder.ClickListener {
+                    override fun onItemClick(view: View?, position: Int) {
+                        //gettting data from firebase from the position clicked.
+                        val mTitle = getItem(position).title
+                        val mDesc = getItem(position).description
+                        val mImage = getItem(position).image
+                        //String postId = getItem(position).getUid();
+
+                        //passing data to the new activity
+                        val intent = Intent(view?.context, ImageDetailsActivity::class.java)
+                        intent.putExtra("title", mTitle) //put title
+                        intent.putExtra("description", mDesc) //put description
+                        intent.putExtra("image", mImage) //put image url
+                        // intent.putExtra("uid",postId);//put post id
+                        startActivity(intent)
+                    }
+
+                    override fun onItemLongClick(view: View?, position: Int) {
+                        //get the current title
+                        val cTitle = getItem(position).title
+
+
+                        //get the current description
+                        val cDesc = getItem(position).description
+
+                        //get the current image url
+                        val cImageUrl = getItem(position).image
+                        //get the current postId
+                        val cImageId = getRef(position).key
+
+
+                        //show dialog on long click
+                        val builder = AlertDialog.Builder(requireContext())
+
+                        //options to display in a dialog
+                        val options = arrayOf("Update", "Delete")
+
+                        //setting dialog
+                        builder.setItems(options) { dialog, which ->
+                            //handle dialogs item clicks
+                            if (which == 0) {
+                                //update clicked
+                                //start activity with putting the current data
+                                val intent = Intent(requireContext(), ImageAddActivity::class.java)
+                                intent.putExtra("cTitle", cTitle)
+                                intent.putExtra("cDesc", cDesc)
+                                intent.putExtra("cImageUrl", cImageUrl)
+                                intent.putExtra("cImageId", cImageId)
+                                startActivity(intent)
+                            }
+                            if (which == 1) {
+                                //delete click
+                                //method call
+                                showDeleteDataDialog(cTitle, cImageUrl, cImageId)
+                            }
+                        }
+                        builder.create().show() //show dialog
+                    }
+                })
+                return viewHolder
+            }
+        }
+        //set layout as a linear layout
+        mRecyclerview!!.layoutManager = mLayoutManager
+        (firebaseRecyclerAdapter as FirebaseRecyclerAdapter<ModelClass, ViewHolder>).startListening()
+
+        //set adapter to firebase recyclerview
+        mRecyclerview!!.adapter = firebaseRecyclerAdapter
+
+
+
+    }
+
     private fun sorting(){
         //since the default value is the newest so for the first time it will display newest post first.
         mSharedPreferences = requireContext().getSharedPreferences("SortingSettings", AppCompatActivity.MODE_PRIVATE)
