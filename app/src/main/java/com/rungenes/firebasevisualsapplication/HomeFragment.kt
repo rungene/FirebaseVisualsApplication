@@ -365,4 +365,11 @@ class HomeFragment : Fragment() {
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+        if (firebaseRecyclerAdapter != null) {
+            firebaseRecyclerAdapter!!.stopListening()
+        }
+    }
+
 }
