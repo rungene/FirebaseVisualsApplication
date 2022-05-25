@@ -2,6 +2,7 @@ package com.rungenes.firebasevisualsapplication
 
 import android.content.Intent
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -371,5 +372,39 @@ class HomeFragment : Fragment() {
             firebaseRecyclerAdapter!!.stopListening()
         }
     }
+
+
+    private fun sortDialog() {
+        val sortingOptions = arrayOf("Newest", "Oldest")
+        val alertDialog = AlertDialog.Builder(requireContext())
+        alertDialog.setTitle("Sort By") //set title
+            .setIcon(R.drawable.ic_action_sort) //set icon
+            .setItems(sortingOptions) { dialogInterface, i ->
+                //the i is the is the index position of the selected item
+                //0 represents = sort by newest and 1 = sort by oldest
+                if (i == 0) {
+                    //sort by newest
+                    //edit our shared preferences
+                    val editor = mSharedPreferences!!.edit()
+                    editor.putString("Sort", "newest") //where "sort"= key and newest=value
+                    editor.apply() //apply/save our values to the shared preference
+                    recreateFragment(this)   //recreate the fragment to take effect.
+                } else if (i == 1) {
+                    //sort by oldest
+                    //edit our shared preferences
+                    val editor = mSharedPreferences!!.edit()
+                    editor.putString("Sort", "oldest") //where "sort"= key and oldest=value
+                    editor.apply() //apply/save our values to the shared preference
+                     recreateFragment(this)//recreate the fragment to take effect.
+                }
+            }
+        alertDialog.show()
+    }
+
+    private fun recreateFragment(fragment : Fragment){
+            parentFragmentManager.beginTransaction().detach(fragment).commit()
+            parentFragmentManager.beginTransaction().attach(fragment).commit()
+    }
+
 
 }
