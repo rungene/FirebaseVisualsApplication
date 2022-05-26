@@ -395,6 +395,10 @@ class HomeFragment : Fragment() {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return super.onOptionsItemSelected(item)
+    }
+
 
     private fun sortDialog() {
         val sortingOptions = arrayOf("Newest", "Oldest")
