@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.database.FirebaseRecyclerAdapter
@@ -375,6 +376,20 @@ class HomeFragment : Fragment() {
         //inflating the menu ,this adds items to the action bar if present
         inflater.inflate(R.menu.menu, menu)
         val menuItem = menu.findItem(R.id.menu_search)
+        val searchView = menuItem.actionView as SearchView
+        searchView.queryHint = "Search by roads..."
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(s: String): Boolean {
+                firebaseSearch(s)
+                return false
+            }
+
+            override fun onQueryTextChange(s: String): Boolean {
+                //filter as you text
+                firebaseSearch(s)
+                return false
+            }
+        })
 
 
         super.onCreateOptionsMenu(menu, inflater)
