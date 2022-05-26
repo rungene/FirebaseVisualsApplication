@@ -372,6 +372,11 @@ class HomeFragment : Fragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        //inflating the menu ,this adds items to the action bar if present
+        inflater.inflate(R.menu.menu, menu)
+        val menuItem = menu.findItem(R.id.menu_search)
+
+
         super.onCreateOptionsMenu(menu, inflater)
     }
 
