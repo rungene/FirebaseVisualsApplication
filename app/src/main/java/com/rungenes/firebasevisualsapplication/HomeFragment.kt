@@ -399,6 +399,13 @@ class HomeFragment : Fragment() {
 
         val id = item.itemId
 
+        //handle other action bar item clicks hear
+        if (id == R.id.menu_sorting) {
+            //display alert dialog to choose sorting
+            sortDialog()
+            return true
+        }
+
         return super.onOptionsItemSelected(item)
     }
 
