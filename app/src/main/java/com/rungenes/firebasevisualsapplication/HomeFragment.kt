@@ -396,6 +396,9 @@ class HomeFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        val id = item.itemId
+
         return super.onOptionsItemSelected(item)
     }
 
