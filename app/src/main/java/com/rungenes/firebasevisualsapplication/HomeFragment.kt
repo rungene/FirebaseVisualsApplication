@@ -10,10 +10,12 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
+import com.google.android.material.navigation.NavigationView
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -33,6 +35,7 @@ class HomeFragment : Fragment() {
     private val uploadStoragePath = "All_Image_Upload/"
     //saving sorting settings
     private var mSharedPreferences: SharedPreferences? = null
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -377,7 +380,7 @@ class HomeFragment : Fragment() {
         inflater.inflate(R.menu.menu, menu)
         val menuItem = menu.findItem(R.id.menu_search)
         val searchView = menuItem.actionView as SearchView
-        searchView.queryHint = "Search by roads..."
+        searchView.queryHint = getString(R.string.search_roads)
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(s: String): Boolean {
                 firebaseSearch(s)
@@ -404,7 +407,11 @@ class HomeFragment : Fragment() {
             //display alert dialog to choose sorting
             sortDialog()
             return true
-        }
+        }else  //start Add Post Fragment
+            if (id == R.id.add_post) {
+                findNavController().navigate(R.id.action_homeFragment_to_imageAddFragment,null)
+
+            }
 
         return super.onOptionsItemSelected(item)
     }
