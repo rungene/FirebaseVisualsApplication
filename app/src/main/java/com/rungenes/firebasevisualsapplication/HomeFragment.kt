@@ -241,7 +241,7 @@ class HomeFragment : Fragment() {
     //search the data
     private fun firebaseSearch(textSearch: String) {
         //convert string entered in serchview to lower case
-        val query = textSearch.toLowerCase()
+        val query = textSearch.lowercase()
         val firebaseQuery = mRef!!.orderByChild("search").startAt(query).endAt(query + "\uf8ff")
         options = FirebaseRecyclerOptions.Builder<ModelClass>()
             .setQuery(firebaseQuery, ModelClass::class.java).build()
