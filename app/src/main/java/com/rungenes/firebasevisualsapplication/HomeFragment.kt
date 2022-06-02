@@ -23,6 +23,7 @@ import com.google.firebase.storage.FirebaseStorage
 class HomeFragment : Fragment() {
 
     private var mfirebaseDatabase: FirebaseDatabase? = null
+    private var firebaseStorage: FirebaseStorage? = null
     private var mRecyclerview: RecyclerView? = null
     private var options: FirebaseRecyclerOptions<ModelClass>? = null
     private var mRef: DatabaseReference? = null
