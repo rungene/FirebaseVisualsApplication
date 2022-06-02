@@ -55,6 +55,13 @@ class HomeFragment : Fragment() {
         mRecyclerview?.setHasFixedSize(true)
 
         showData()
+
+        //sending the query to the Firebase
+        mfirebaseDatabase = FirebaseDatabase.getInstance()
+        mRef = mfirebaseDatabase!!.getReference("Data")
+        firebaseStorage = FirebaseStorage.getInstance()
+
+        mRef!!.keepSynced(true)
     }
 
 
