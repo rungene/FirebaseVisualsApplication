@@ -16,15 +16,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.android.material.navigation.NavigationView
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 
 
 class HomeFragment : Fragment() {
 
+    private var mfirebaseDatabase: FirebaseDatabase? = null
     private var mRecyclerview: RecyclerView? = null
     private var options: FirebaseRecyclerOptions<ModelClass>? = null
     private var mRef: DatabaseReference? = null
