@@ -34,14 +34,11 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-    private var mfirebaseDatabase: FirebaseDatabase? = null
-    private var mRef: DatabaseReference? = null
-
     // private Button btnLogout;
     private var mAuth: FirebaseAuth? = null
     private var mAuthListener: FirebaseAuth.AuthStateListener? = null
 
-    private var firebaseStorage: FirebaseStorage? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -52,12 +49,7 @@ class MainActivity : AppCompatActivity() {
         val actionBar = supportActionBar
         actionBar!!.setTitle("MDS List")
 
-        //sending the query to the Firebase
-        mfirebaseDatabase = FirebaseDatabase.getInstance()
-        mRef = mfirebaseDatabase!!.getReference("Data")
-        firebaseStorage = FirebaseStorage.getInstance()
 
-        mRef!!.keepSynced(true)
         mAuthListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
             val user = firebaseAuth.currentUser
             if (user != null) {
