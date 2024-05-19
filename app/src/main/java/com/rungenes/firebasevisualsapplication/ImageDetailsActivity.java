@@ -18,6 +18,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import com.github.chrisbanes.photoview.PhotoView;
@@ -37,7 +39,7 @@ public class ImageDetailsActivity extends AppCompatActivity {
     PhotoView imageViewRowDetails;
     Button buttonSave, buttonShare, buttonWall;
     Bitmap bitmap;
-    private static final int WRITE_EXTERNAL_STORAGE_CODE = 1;
+    private static final int WRITE_EXTERNAL_STORAGE_CODE = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +97,7 @@ public class ImageDetailsActivity extends AppCompatActivity {
 
                 //if os >= marshmallow we need permission to save image
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
+/*                    if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
                             PackageManager.PERMISSION_DENIED) {
                         String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
@@ -106,12 +108,12 @@ public class ImageDetailsActivity extends AppCompatActivity {
 
                         //permission already granted, save
                         saveImage();
-                    }
+                    }*/
+                    checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE_CODE);
 
 
                 } else {
                     //system os is < than marshmallow
-
                     saveImage();
 
                 }
@@ -139,12 +141,17 @@ public class ImageDetailsActivity extends AppCompatActivity {
                 setImageWallpaper();
             }
         });
-
-
-
-
     }
-
+    // Function to check and request permission
+    public void checkPermission(String permission, int requestCode){
+        if (ContextCompat.checkSelfPermission(ImageDetailsActivity.this, permission) ==
+        PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(ImageDetailsActivity.this, new String[] {permission}, requestCode);
+        } else {
+            //permission already granted, save
+            saveImage();
+        }
+    }
 
     private void setImageWallpaper() {
 
@@ -285,7 +292,7 @@ public class ImageDetailsActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case WRITE_EXTERNAL_STORAGE_CODE: {
                 //if the request code is cancelled the results arrays should be empty
@@ -298,6 +305,7 @@ public class ImageDetailsActivity extends AppCompatActivity {
                     //permission is denied
                     Toast.makeText(this, "Enable permission to save image", Toast.LENGTH_SHORT).show();
                 }
+                break;
             }
 
         }
