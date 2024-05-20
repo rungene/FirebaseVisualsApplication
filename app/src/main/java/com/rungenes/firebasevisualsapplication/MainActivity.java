@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
@@ -20,6 +22,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
+import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -37,6 +42,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 import static com.google.firebase.storage.FirebaseStorage.getInstance;
 
@@ -145,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                         String link = getIntent().getExtras().getString(ExtraConstants.EMAIL_LINK_SIGN_IN);
                         if (link != null) {*/
-                            startActivityForResult(
+   /*                         startActivityForResult(
                                     AuthUI.getInstance()
                                             .createSignInIntentBuilder()
                                             //.setEmailLink(link)
@@ -154,7 +161,8 @@ public class MainActivity extends AppCompatActivity {
                                                     new AuthUI.IdpConfig.EmailBuilder().build())).build(),
                                     RC_SIGN_IN);
 
-
+*/
+                        createSignInIntent();
                         }
 
 
@@ -170,6 +178,51 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private final ActivityResultLauncher<Intent> signInLauncher = registerForActivityResult(
+            new FirebaseAuthUIActivityResultContract(),
+            new ActivityResultCallback<FirebaseAuthUIAuthenticationResult>() {
+                @Override
+                public void onActivityResult(FirebaseAuthUIAuthenticationResult result) {
+                    onSignInResult(result);
+                }
+            }
+    );
+    public void createSignInIntent() {
+        List<AuthUI.IdpConfig> providers = Arrays.asList(
+                new AuthUI.IdpConfig.GoogleBuilder().build(),
+                new AuthUI.IdpConfig.EmailBuilder().build());
+
+        //Create and Launch sign-in intent
+        Intent signInIntent = AuthUI.getInstance()
+                .createSignInIntentBuilder()
+                .setAvailableProviders(providers)
+                .build();
+        signInLauncher.launch(signInIntent);
+    }
+
+private void onSignInResult(FirebaseAuthUIAuthenticationResult result) {
+    IdpResponse response = result.getIdpResponse();
+    if (result.getResultCode() == RESULT_OK) {
+        // Successfully signed in
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null){
+            Toast.makeText(this, "Signed in!" + user.getDisplayName(), Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Sign-in successful but user data is unavailable.", Toast.LENGTH_SHORT).show();
+        }
+
+    } else if (result.getResultCode() == RESULT_CANCELED) {
+        finish();
+    } else {
+        if (response == null){
+            Toast.makeText(this, "Signing Cancelled", Toast.LENGTH_SHORT).show();
+        } else {
+            String str = "Error Code" + Objects.requireNonNull(response.getError()).getErrorCode();
+            Toast.makeText(this, "Error Signing" + str, Toast.LENGTH_SHORT).show();
+        }
+    }
+}
+/*
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -183,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
         }
-    }
+    }*/
 
 
 
