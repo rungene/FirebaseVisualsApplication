@@ -144,9 +144,9 @@ public class ImageDetailsActivity extends AppCompatActivity {
     }
     // Function to check and request permission
     public void checkPermission(String permission, int requestCode){
-        if (ContextCompat.checkSelfPermission(ImageDetailsActivity.this, permission) ==
+        if (ContextCompat.checkSelfPermission(this, permission) ==
         PackageManager.PERMISSION_DENIED) {
-            ActivityCompat.requestPermissions(ImageDetailsActivity.this, new String[] {permission}, requestCode);
+            ActivityCompat.requestPermissions(this, new String[] {permission}, requestCode);
         } else {
             //permission already granted, save
             saveImage();
