@@ -2,6 +2,7 @@ package com.rungenes.firebasevisualsapplication;
 
 import android.Manifest;
 import android.app.WallpaperManager;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -10,6 +11,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -27,6 +30,7 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -39,7 +43,9 @@ public class ImageDetailsActivity extends AppCompatActivity {
     PhotoView imageViewRowDetails;
     Button buttonSave, buttonShare, buttonWall;
     Bitmap bitmap;
-    private static final int WRITE_EXTERNAL_STORAGE_CODE = 100;
+    private static final int READ_EXTERNAL_STORAGE_CODE = 100;
+    private static final int WRITE_EXTERNAL_STORAGE_CODE = 101;
+    private static final int READ_MEDIA_IMAGES_CODE = 102;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,30 +100,30 @@ public class ImageDetailsActivity extends AppCompatActivity {
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                //if os >= marshmallow we need permission to save image
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-/*                    if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
-                            PackageManager.PERMISSION_DENIED) {
-                        String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
-
-                        //show a pop up to grant permissions
-                        requestPermissions(permissions, WRITE_EXTERNAL_STORAGE_CODE);
-
+                //check and request permissions based on OS Version
+                    //if os >= android 10 request read permission to save image
+                Log.d("ButtonSave", "Save button clicked");
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                        //Android 13 and above
+                        Log.d("ButtonSave", "Checking READ_MEDIA_IMAGES for API >= 33");
+                        checkPermission(Manifest.permission.READ_MEDIA_IMAGES, READ_MEDIA_IMAGES_CODE);
+                    }
+                    else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        // Android 10 to 12
+                        Log.d("ButtonSave", "Checking READ_EXTERNAL_STORAGE for API >= 29");
+                        checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE,
+                                READ_EXTERNAL_STORAGE_CODE);
+                        //if os >= marshmallow we need write permission to save image
+                    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        // Android 6 to 9
+                        Log.d("ButtonSave", "Checking WRITE_EXTERNAL_STORAGE for API >= 23");
+                        checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                READ_EXTERNAL_STORAGE_CODE);
                     } else {
-
-                        //permission already granted, save
+                        //system os is < than marshmallow
+                        Log.d("ButtonSave", "API < 23, directly saving image");
                         saveImage();
-                    }*/
-                    checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE_CODE);
-
-
-                } else {
-                    //system os is < than marshmallow
-                    saveImage();
-
-                }
-
+                    }
             }
         });
         //onclick for share button
@@ -125,7 +131,6 @@ public class ImageDetailsActivity extends AppCompatActivity {
         buttonShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
 
                 shareImage();
 
@@ -146,16 +151,17 @@ public class ImageDetailsActivity extends AppCompatActivity {
     public void checkPermission(String permission, int requestCode){
         if (ContextCompat.checkSelfPermission(this, permission) ==
         PackageManager.PERMISSION_DENIED) {
+            Log.d("PermissionCheck", "Requesting permission: " + permission);
             ActivityCompat.requestPermissions(this, new String[] {permission}, requestCode);
         } else {
             //permission already granted, save
+            Log.d("PermissionCheck", "Permission already granted: " + permission);
             saveImage();
         }
     }
 
+
     private void setImageWallpaper() {
-
-
 
         bitmap = ((BitmapDrawable) imageViewRowDetails.getDrawable()).getBitmap();
         WallpaperManager wallpaperManager = WallpaperManager.getInstance(getApplicationContext());
@@ -174,8 +180,6 @@ public class ImageDetailsActivity extends AppCompatActivity {
     }
 
     private void shareImage() {
-
-
         try {
             bitmap = ((BitmapDrawable) imageViewRowDetails.getDrawable()).getBitmap();
             //get image title and description and save in string s
@@ -215,8 +219,51 @@ public class ImageDetailsActivity extends AppCompatActivity {
     }
 
     private void saveImage() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            saveImageUsingMediaStore();
+        } else {
+            saveImageUsingFileSystem();
+        }
+    }
 
+    private void saveImageUsingFileSystem() {
+        try {
+            Bitmap bitmap = ((BitmapDrawable) imageViewRowDetails.getDrawable()).getBitmap();
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", 
+                    Locale.getDefault()).format(System.currentTimeMillis());
+            String imageName = timeStamp + ".png";
+            
+            File path = Environment.getExternalStorageDirectory();
+            File directory = new File(path + "/MDS/");
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
+            File file = new File(directory, imageName);
+            String currentPhotoPath = file.getAbsolutePath();
+            
+            try (OutputStream out = new FileOutputStream(file)){
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+                out.flush();
+                Toast.makeText(this, "Image saved to gallery: "+ imageName,
+                        Toast.LENGTH_SHORT).show();
 
+                //Add picture to Android Gallery
+                Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                File f = new File(currentPhotoPath);
+                Uri contentUri = Uri.fromFile(f);
+                mediaScanIntent.setData(contentUri);
+                this.sendBroadcast(mediaScanIntent);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Failed to save image: "+ e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Please wait for the image to load.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void saveImageUsingMediaStore() {
         try {
             String currentPhotoPath;
 
@@ -225,61 +272,40 @@ public class ImageDetailsActivity extends AppCompatActivity {
 
             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss",
                     Locale.getDefault()).format(System.currentTimeMillis());
-
-            //Path to external storage
-            File path = Environment.getExternalStorageDirectory();
-
-
-
-            //File path = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-
-            //create a folder named "MDS"
-
-            File directory = new File(path + "/MDS/");
-
-            directory.mkdirs();
-
+            ContentValues values = new ContentValues();
             //image name
-            String imageName = timeStamp + ".PNG";
+            String imageName = timeStamp + ".png";
+            values.put(MediaStore.Images.Media.DISPLAY_NAME, imageName);
+            values.put(MediaStore.Images.Media.MIME_TYPE, "image/png");
+            values.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES +
+                    "/MDS");
+            Uri uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                    values);
 
+            if (uri != null) {
+                try (OutputStream out = getContentResolver().openOutputStream(uri)){
+                    if (out != null) {
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+                        Toast.makeText(this, "Image saved to gallery: " + imageName,
+                                Toast.LENGTH_SHORT).show();
 
+                    } else {
+                        throw new IOException("Failed to get output stream");
+                    }
 
-            File file = new File(directory, imageName);
-
-
-
-            currentPhotoPath = file.getAbsolutePath();
-
-            OutputStream out;
-
-            try {
-                out = new FileOutputStream(file);
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
-                out.flush();
-                out.close();
-                Toast.makeText(this, imageName + "Image saved gallery" + directory, Toast.LENGTH_SHORT).show();
-
-                //add picture to Android Gallery
-
-                Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-                File f = new File(currentPhotoPath);
-                Uri contentUri = Uri.fromFile(f);
-                mediaScanIntent.setData(contentUri);
-                this.sendBroadcast(mediaScanIntent);
-
-
-            } catch (Exception e) {
-
-                //failed to save
-                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(this, "Failed to save image " + e.getMessage(),
+                            Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                throw new IOException("Failed to create MediaStore record.");
             }
 
         }catch (Exception e){
-
+            e.printStackTrace();
             Toast.makeText(this, "Please await the image to load", Toast.LENGTH_SHORT).show();
         }
-
-
 
     }
     //handling onback pressed (open previous activity)
@@ -294,19 +320,23 @@ public class ImageDetailsActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
-            case WRITE_EXTERNAL_STORAGE_CODE: {
+            case READ_EXTERNAL_STORAGE_CODE:
+            case WRITE_EXTERNAL_STORAGE_CODE:
+            case READ_MEDIA_IMAGES_CODE:
+            {
                 //if the request code is cancelled the results arrays should be empty
                 if (grantResults.length > 0 && grantResults[0] ==
                         PackageManager.PERMISSION_GRANTED) {
                     //permission is granted. save image
+                    Log.d("PermissionResult", "Permission granted, saving image");
                     saveImage();
-
                 } else {
                     //permission is denied
-                    Toast.makeText(this, "Enable permission to save image", Toast.LENGTH_SHORT).show();
+                    Log.d("PermissionsResult", "Permission denied");
+                    Toast.makeText(this, "Enable permission to save image",
+                            Toast.LENGTH_SHORT).show();
                 }
-                break;
-            }
+            } break;
 
         }
 
